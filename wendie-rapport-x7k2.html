@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Beach House — Rapport (privat)</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+:root{color-scheme:light;
+--bg:#eef3f7;--card:#ffffff;--ink:#13243a;--muted:#5b6b7f;--line:#e3e9f0;
+--sea:#1d6fa5;--sea-soft:#e7f1f8;--ok:#2f9e7e;--warn:#d98324;--warnbg:#fdeede;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.5}
+.wrap{max-width:900px;margin:0 auto;padding:26px 18px 60px}
+h1{margin:0 0 4px;font-size:24px}
+header p{margin:0;color:var(--muted);font-size:13px}
+h2{font-size:16px;margin:28px 0 8px;display:flex;align-items:center;gap:8px}
+.hint{color:var(--muted);font-size:13px;margin:0 0 12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:0 1px 3px rgba(19,36,58,.05);margin-bottom:10px}
+.gate{max-width:340px;margin:100px auto;text-align:center}
+.gate input{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;font-size:15px;margin-bottom:10px}
+.btn{border:1.5px solid var(--sea);background:var(--card);color:var(--sea);
+ font:600 13px/1 inherit;padding:9px 14px;border-radius:10px;cursor:pointer}
+.btn.solid{background:var(--sea);color:#fff}
+#app{display:none}
+.comment{border-left:3px solid var(--line);padding:8px 0 8px 12px;margin-bottom:8px}
+.comment.open{border-color:var(--warn);background:var(--warnbg);border-radius:0 8px 8px 0;padding:8px 12px}
+.comment .meta{font-size:11px;color:var(--muted);margin-bottom:3px}
+.comment .msg{font-size:14px}
+.comment button{margin-top:6px;font-size:11px;padding:4px 10px;border-radius:8px;border:1px solid var(--ok);color:var(--ok);background:#fff;cursor:pointer}
+.comment button.done{border-color:var(--muted);color:var(--muted)}
+.turn{margin-bottom:10px}
+.turn summary{cursor:pointer;padding:12px 14px;font-weight:600;font-size:14px;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.turn summary::-webkit-details-marker{display:none}
+.turn .bar{flex:1;height:7px;border-radius:999px;background:var(--line);overflow:hidden;margin:0 10px}
+.turn .bar i{display:block;height:100%;background:var(--ok)}
+.turn .pct{font-size:12px;color:var(--muted);white-space:nowrap;font-weight:700}
+.roomrow{padding:8px 14px;border-top:1px solid var(--line);font-size:12.5px}
+.roomrow .rh{display:flex;justify-content:space-between;font-weight:700;margin-bottom:4px}
+.item{display:flex;justify-content:space-between;padding:3px 0;color:var(--muted)}
+.item.on{color:var(--ink)}
+.item .by{font-size:11px}
+.empty{color:var(--muted);font-size:13px;padding:10px 2px}
+.refresh{font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="gate" id="gate">
+ <h1>🔒 Rapport</h1>
+ <p class="hint">Privat — kun til Wendie.</p>
+ <input type="password" id="pass" placeholder="Kode">
+ <button class="btn solid" id="unlockBtn" style="width:100%">Åbn</button>
+</div>
+
+<div id="app">
+<header>
+<h1>🏖️ The Beach House — Rapport</h1>
+<p>Privat oversigt over klargøring og kommentarer fra pigerne. <button class="btn refresh" id="refreshBtn">↻ Opdater</button></p>
+</header>
+
+<h2>✉️ Kommentarer <span id="openCount" style="font-size:12px;color:var(--warn);font-weight:700"></span></h2>
+<div id="commentsList"></div>
+
+<h2>🧹 Klargøring pr. skifte</h2>
+<div id="turnList"></div>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+const SUPABASE_URL='https://cqmjiymbspmybyurblwq.supabase.co';
+const SUPABASE_KEY='sb_publishable_N9_9VLNzmVpkk5dazL87lQ_nAgOBTOb';
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const PASSPHRASE='beachhouse2026';
+
+const PLAN=[
+ {id:'p1',date:'12. juli',txt:'Klargør før Ørjan (ankomst kl. 16)',who:''},
+ {id:'p2',date:'21.–22. juli',txt:'Ørjan ud → Cindy ind',who:'Emilie'},
+ {id:'p3',date:'29. juli',txt:'Cindy ud → Katrijn ind',who:'Katrine'},
+ {id:'p4',date:'4. august',txt:'Katrijn ud → Urs ind',who:'Katrine'},
+ {id:'p5',date:'9. august',txt:'Urs ud → Pascal ind',who:''},
+ {id:'p6',date:'19.–23. august',txt:'Pascal ud → Sarah ind',who:''},
+ {id:'p7',date:'28.–30. august',txt:'Sarah ud → Tamara ind',who:'Emilie'},
+ {id:'p8',date:'6. september',txt:'Slutrengøring efter Tamara',who:''},
+];
+// samme rumliste som klargoring.html — kun navne + antal punkter er relevante her
+const ROOM_ITEM_COUNTS={
+ sov1:11,sov2:12,sov3:11,udestue:12,stue:10,koekken:19,gaestetoilet:8,bad:9,gang:4,
+ planter:4,aflob:3,varme:5,udenfor:5,generelt:9
+};
+const ROOM_NAMES={
+ sov1:'🛏️ Soveværelse 1',sov2:'🛏️ Soveværelse 2',sov3:'🛏️ Soveværelse 3',udestue:'🌿 Udestue',
+ stue:'🛋️ Stue',koekken:'🍽️ Køkken',gaestetoilet:'🚽 Gæstetoilet',bad:'🛁 Badeværelse',gang:'🚪 Gang',
+ planter:'🪴 Planter vandet',aflob:'🚰 Kogende vand i afløb',varme:'🌡️ Radiatorer & varmeovne',
+ udenfor:'🌤️ Udenfor',generelt:'✅ Generelt'
+};
+const ROOM_ORDER=Object.keys(ROOM_NAMES);
+
+document.getElementById('unlockBtn').addEventListener('click',unlock);
+document.getElementById('pass').addEventListener('keydown',e=>{if(e.key==='Enter')unlock();});
+function unlock(){
+ if(document.getElementById('pass').value===PASSPHRASE){
+  document.getElementById('gate').style.display='none';
+  document.getElementById('app').style.display='block';
+  loadAll();
+ }else{alert('Forkert kode');}
+}
+document.getElementById('refreshBtn').addEventListener('click',loadAll);
+
+async function loadAll(){
+ await Promise.all([loadComments(),loadChecks()]);
+}
+
+async function loadComments(){
+ const {data}=await sb.from('comments').select('*').order('created_at',{ascending:false});
+ const list=document.getElementById('commentsList');
+ if(!data||!data.length){list.innerHTML='<p class="empty">Ingen kommentarer endnu.</p>';document.getElementById('openCount').textContent='';return;}
+ const open=data.filter(c=>!c.resolved).length;
+ document.getElementById('openCount').textContent=open?`(${open} ikke løst)`:'';
+ list.innerHTML=data.map(c=>{
+  const t=new Date(c.created_at);
+  const ts=t.toLocaleDateString('da-DK',{day:'numeric',month:'short'})+' kl. '+t.toLocaleTimeString('da-DK',{hour:'2-digit',minute:'2-digit'});
+  const turn=PLAN.find(p=>p.id===c.turnover_id);
+  return `<div class="comment${c.resolved?'':' open'}">
+   <div class="meta">${c.author||'Ukendt'} · ${ts}${turn?' · '+turn.date:''}</div>
+   <div class="msg">${escapeHtml(c.message)}</div>
+   <button class="${c.resolved?'done':''}" data-id="${c.id}" data-resolved="${c.resolved}">${c.resolved?'✓ Løst':'Marker som løst'}</button>
+  </div>`;
+ }).join('');
+ list.querySelectorAll('button[data-id]').forEach(btn=>{
+  btn.addEventListener('click',async()=>{
+   const id=btn.dataset.id, resolved=btn.dataset.resolved==='true';
+   await sb.from('comments').update({resolved:!resolved}).eq('id',id);
+   loadComments();
+  });
+ });
+}
+
+async function loadChecks(){
+ const {data}=await sb.from('checklist_checks').select('*');
+ const byTurn={};
+ (data||[]).forEach(row=>{
+  byTurn[row.turnover_id]=byTurn[row.turnover_id]||[];
+  byTurn[row.turnover_id].push(row);
+ });
+ const totalItems=Object.values(ROOM_ITEM_COUNTS).reduce((a,b)=>a+b,0);
+ const list=document.getElementById('turnList');
+ list.innerHTML=PLAN.map(p=>{
+  const rows=(byTurn[p.id]||[]).filter(r=>r.checked);
+  const done=rows.length;
+  const pct=totalItems?Math.round(done/totalItems*100):0;
+  const byRoom={};
+  rows.forEach(r=>{byRoom[r.room_id]=byRoom[r.room_id]||[];byRoom[r.room_id].push(r);});
+  const roomsHtml=ROOM_ORDER.map(rid=>{
+   const checked=(byRoom[rid]||[]).sort((a,b)=>a.item_index-b.item_index);
+   const total=ROOM_ITEM_COUNTS[rid];
+   if(!checked.length)return '';
+   const items=checked.map(r=>`<div class="item on">${escapeHtml(r.item_text)}<span class="by">${r.checked_by}</span></div>`).join('');
+   return `<div class="roomrow"><div class="rh"><span>${ROOM_NAMES[rid]}</span><span>${checked.length}/${total}</span></div>${items}</div>`;
+  }).join('');
+  return `<details class="turn card" style="padding:0">
+   <summary><span>${p.date} — ${p.txt}${p.who?' · <span style=\"color:var(--muted);font-weight:400\">'+p.who+'</span>':''}</span>
+    <span class="bar"><i style="width:${pct}%"></i></span><span class="pct">${done}/${totalItems}</span></summary>
+   ${roomsHtml||'<p class="empty">Intet tjekket af endnu.</p>'}
+  </details>`;
+ }).join('');
+}
+
+function escapeHtml(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
+</script>
+</body>
+</html>

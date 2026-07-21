@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Beach House — Klargøring</title>
+<style>
+:root{color-scheme:light;
+--bg:#eef3f7;--card:#ffffff;--ink:#13243a;--muted:#5b6b7f;--line:#e3e9f0;
+--sea:#1d6fa5;--sea-soft:#e7f1f8;--ok:#2f9e7e;--warn:#d98324;}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(1200px 420px at 50% -120px,#dff0fb 0%,rgba(223,240,251,0) 70%),var(--bg);
+ color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.5}
+.wrap{max-width:720px;margin:0 auto;padding:22px 16px 70px}
+h1{margin:0 0 4px;font-size:22px}
+header p{margin:0;color:var(--muted);font-size:13px}
+h2{font-size:16px;margin:26px 0 6px}
+.hint{color:var(--muted);font-size:13px;margin:0 0 12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:0 1px 3px rgba(19,36,58,.05)}
+.who-card{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+select,input[type=text],textarea{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:15px;font-family:inherit;background:#fcfdff}
+select:focus,input:focus,textarea:focus{outline:none;border-color:var(--sea);background:#fff}
+label.lbl{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:5px}
+.turnover-box{background:var(--sea-soft);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:14px;font-size:14px}
+.turnover-box b{color:var(--sea)}
+.progress-top{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0;margin:0 0 6px;display:flex;align-items:center;gap:10px}
+.bar{flex:1;height:8px;border-radius:999px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok);transition:width .2s}
+.progress-top span{font-size:12px;color:var(--muted);font-weight:700;white-space:nowrap}
+.room-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(19,36,58,.05);transition:border-color .15s,background .15s}
+.room-card.complete{border-color:var(--ok);background:linear-gradient(180deg,#f2faf7,var(--card) 46px)}
+.room-card h3{margin:0 0 4px;font-size:15px;display:flex;align-items:center;gap:6px}
+.room-card .rprog{font-size:11px;color:var(--muted);margin:0 0 10px;font-weight:600}
+.room-card .rprog b{color:var(--ok)}
+.room-card .rnote{font-size:11.5px;color:var(--sea);background:var(--sea-soft);border-radius:8px;padding:7px 9px;margin:0 0 10px;line-height:1.4}
+.rgallery{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}
+.rgallery a{flex:1 1 64px;max-width:90px;display:block}
+.rgallery img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:8px;border:1px solid var(--line)}
+.chk-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.chk-list li{display:flex;align-items:flex-start;gap:9px;font-size:13.5px;line-height:1.4}
+.chk-list input{margin-top:2px;accent-color:var(--ok);width:19px;height:19px;flex:0 0 auto;cursor:pointer}
+.chk-list label{cursor:pointer}
+.chk-list li.done label{color:var(--muted);text-decoration:line-through}
+.chk-list .by{display:block;font-size:10.5px;color:var(--muted);font-weight:600;margin-top:1px}
+.gate{max-width:360px;margin:80px auto;text-align:center}
+.gate select{margin-bottom:12px}
+.btn{border:1.5px solid var(--sea);background:var(--card);color:var(--sea);
+ font:600 14px/1 inherit;padding:11px 16px;border-radius:10px;cursor:pointer;width:100%}
+.btn.solid{background:var(--sea);color:#fff}
+.btn.ok{border-color:var(--ok);color:var(--ok)}
+.btn.ok.solid{background:var(--ok);color:#fff}
+.commentbox textarea{min-height:80px;resize:vertical;margin-bottom:8px}
+.sent-note{font-size:12px;color:var(--ok);font-weight:600;margin-top:8px;display:none}
+.foot{margin-top:26px;color:var(--muted);font-size:11px;text-align:center}
+#app{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="gate" id="gate">
+ <h1>🏖️ The Beach House</h1>
+ <p class="hint">Vælg dit navn for at åbne dagens klargøringstjekliste.</p>
+ <div class="card">
+  <label class="lbl">Hvem er du?</label>
+  <select id="whoSelect">
+   <option value="">Vælg…</option>
+   <option value="Emilie">Emilie</option>
+   <option value="Katrine">Katrine</option>
+   <option value="__other">Andet navn…</option>
+  </select>
+  <input type="text" id="whoOther" placeholder="Skriv dit navn" style="display:none;margin-top:8px">
+  <button class="btn solid" id="startBtn" style="margin-top:12px">Start klargøring →</button>
+ </div>
+</div>
+
+<div id="app">
+<header>
+<h1>🏖️ The Beach House</h1>
+<p>Klargøringstjekliste · <span id="whoLabel"></span> <a href="#" id="switchWho" style="color:var(--sea);font-size:12px;margin-left:6px">(skift navn)</a></p>
+</header>
+
+<div class="turnover-box" id="turnoverBox"></div>
+
+<div class="progress-top">
+ <div class="bar"><i id="barFill" style="width:0%"></i></div>
+ <span id="progressLabel">0/0</span>
+</div>
+
+<div id="chkGrid"></div>
+
+<h2>✉️ Mangler der noget i huset?</h2>
+<p class="hint">Fx lyspærer, batterier, sæbe, opvasketabs — skriv det her, så ser Wendie det med det samme.</p>
+<div class="card commentbox">
+ <textarea id="commentText" placeholder="Skriv en kommentar…"></textarea>
+ <button class="btn ok solid" id="sendComment">Send til Wendie</button>
+ <p class="sent-note" id="sentNote">✓ Sendt — tak!</p>
+</div>
+
+<p class="foot">The Beach House · Trelde Næsvej 95</p>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+const SUPABASE_URL='https://cqmjiymbspmybyurblwq.supabase.co';
+const SUPABASE_KEY='sb_publishable_N9_9VLNzmVpkk5dazL87lQ_nAgOBTOb';
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+const key=(y,m,d)=>y*10000+m*100+d;
+const PLAN=[
+ {id:'p1',date:'12. juli',txt:'Klargør før Ørjan (ankomst kl. 16)',days:[[2026,6,12]]},
+ {id:'p2',date:'21.–22. juli',txt:'Ørjan ud → Cindy ind',days:[[2026,6,21],[2026,6,22]]},
+ {id:'p3',date:'29. juli',txt:'Cindy ud → Katrijn ind',days:[[2026,6,29]]},
+ {id:'p4',date:'4. august',txt:'Katrijn ud → Urs ind',days:[[2026,7,4]]},
+ {id:'p5',date:'9. august',txt:'Urs ud → Pascal ind',days:[[2026,7,9]]},
+ {id:'p6',date:'19.–23. august',txt:'Pascal ud → Sarah ind',days:[[2026,7,19],[2026,7,20],[2026,7,21],[2026,7,22],[2026,7,23]]},
+ {id:'p7',date:'28.–30. august',txt:'Sarah ud → Tamara ind',days:[[2026,7,28],[2026,7,29],[2026,7,30]]},
+ {id:'p8',date:'6. september',txt:'Slutrengøring efter Tamara',days:[[2026,8,6]]},
+];
+function detectTurnover(){
+ const now=new Date(); const tk=key(now.getFullYear(),now.getMonth(),now.getDate());
+ for(const p of PLAN){const ks=p.days.map(d=>key(d[0],d[1],d[2]));if(ks.includes(tk))return p;}
+ for(const p of PLAN){const ks=p.days.map(d=>key(d[0],d[1],d[2]));if(Math.min(...ks)>tk)return p;}
+ return PLAN[PLAN.length-1];
+}
+const turnover=detectTurnover();
+
+const BEDROOM_BASE=[
+ 'Støv tørret af i alle hjørner – både ved loftet og bag døren',
+ 'Støv tørret af på kommoderne',
+ 'Natborde trukket ud og støvet af bagved/under – der gemmer sig ofte støv der',
+ 'Støvsuget grundigt under sengen',
+ 'Gulv vasket',
+ 'Lister tørret af',
+ 'Gardiner tjekket for støv – fjern evt. med en støvrulle',
+ 'Luftet ud',
+ 'Tæpper banket og støvsuget'
+];
+const TOWEL_ITEM='Håndklæder lagt frem på sengen – 2 stk. pr. person (1 stort + 1 lille), tjekket for pletter (læg pletfyldte til side til Wendie)';
+const checklistRooms=[
+ {id:'sov1',icon:'🛏️',name:'Soveværelse 1 (hovedværelse)',imgs:['sov1-1','sov1-2','sov1-3'],
+  sub:'Redes altid op til 2 personer.',
+  items:[...BEDROOM_BASE,'Rent sengetøj redt op til 2 personer',TOWEL_ITEM]},
+ {id:'sov2',icon:'🛏️',name:'Soveværelse 2 (midten)',imgs:['sov2-1','sov2-2','sov2-3','sov2-4'],
+  sub:'Redes kun op hvis gæsterne er flere end 3 personer i alt — spørg altid gæsterne på forhånd hvordan de vil have sengene fordelt.',
+  items:[
+   'Støv tørret af i alle hjørner – loft og bag døren','Støv tørret af på kommoderne',
+   'Seng trukket lidt ud, så der kan gøres ordentligt rent bagved og ved vinduet','Natborde støvet af',
+   'Støvsuget grundigt under sengen','Gulv vasket','Lister tørret af','Gardiner tjekket for støv','Luftet ud',
+   'Tæpper banket og støvsuget','Sengetøj redt op efter aftale (se note ovenfor)',TOWEL_ITEM
+  ]},
+ {id:'sov3',icon:'🛏️',name:'Soveværelse 3',imgs:['sov3-1','sov3-2','sov3-3','sov3-4'],
+  sub:'Næstbedste værelse. Hvis gæsterne kun er 3 personer i alt, redes der op til 1 person herinde – spørg altid på forhånd.',
+  items:[...BEDROOM_BASE,'Sengetøj redt op efter aftale (se note ovenfor)',TOWEL_ITEM]},
+ {id:'udestue',icon:'🌿',name:'Udestue',imgs:['udestue-1','udestue-2','udestue-3'],items:[
+  'Begge sofaer støvsuget grundigt','Tjek for pletter – tør evt. af med fugtig klud','Støv tørret af – især ved planter og lamper',
+  'Tørret af bag ved og under sofaerne','Planter og lænestol trukket frem, så der kan gøres rent bagved',
+  'Brune fluepletter tørret grundigt af (der er tit en del)','Tæppe støvsuget godt','Puder banket','Stole tørret af',
+  'Støv tørret af på kommoden','Gulv vasket','Vinduer tørret af indvendigt'
+ ]},
+ {id:'stue',icon:'🛋️',name:'Stue',imgs:['stue-1','stue-2','stue-3','stue-4'],items:[
+  'Støv tørret af overalt','Tjek at der ikke står våde blomster i vinduerne – efterlader mærker','Støvsuget godt under sofaen',
+  'Støvsuget godt bag daybedden – bliver ofte meget støvet der','Lister tørret af','Lamper tørret af',
+  'Dørkarme og døre tørret af','Gulv vasket','Vinduer tørret af indvendigt','Pejs tjekket og ren'
+ ]},
+ {id:'koekken',icon:'🍽️',name:'Køkken',imgs:['koekken-1','koekken-2','koekken-3','koekken-4'],items:[
+  'Bordplader og fliser aftørret og desinficeret','Ovn, komfur og emhætte rengjort for fedt',
+  'Mikroovn gjort ren indvendigt og udvendigt','Vaskemaskine tjekket – sæbeskuffen fri for snavs/sæberester',
+  'Skab under ovnen tørret grundigt af – bliver ofte beskidt','Bestikskuffen tørret af for krummer',
+  'Øvrige skabe og skuffer tørret af for krummer','Køleskab tømt for gamle madvarer, aftørret indvendigt',
+  'Opvaskemaskine tømt og ren','Afspændingsmiddel fyldt på i opvaskemaskinen','Service, gryder og pander rene og på plads',
+  'Skraldespand tømt, ny pose i','Genbrugsaffald sorteret korrekt og sat ud i garagen, klar til afhentning',
+  'Karklude og håndklæder skiftet til rene','Fyldt op: 1 køkkenrulle, sukker, salt og peber',
+  'Håndsæbe og opvaskemiddel fyldt op ved vasken','Vandhane og vask blankpudset','Gulv vasket','Vinduer tørret af indvendigt'
+ ]},
+ {id:'gaestetoilet',icon:'🚽',name:'Gæstetoilet',imgs:['gaestetoilet-1'],
+  sub:'Spejlet hænger lidt løst/lavt — vær forsigtig når det pudses, så det ikke falder ned.',
+  items:[
+  'Toilet rengjort og desinficeret ud- og indvendigt','Håndvask og armatur blankpudset','Spejl pudset forsigtigt',
+  'Håndsæbe fyldt op','Rent håndklæde hængt op','Ny toiletrulle sat på holderen + 1 ekstra rulle i skuffen',
+  'Skraldespand tømt','Gulv vasket'
+ ]},
+ {id:'bad',icon:'🛁',name:'Badeværelse',imgs:['bad-1','bad-2','bad-3','bad-4'],items:[
+  'Bruseniche/badekar rengjort for kalk, hår og sæberester','Toilet rengjort og desinficeret','Håndvask og armatur blankpudset',
+  'Spejl pudset uden striber','Rene håndklæder (bad + hånd) lagt frem','Ny toiletrulle sat på holderen + 1 ekstra rulle i skuffen',
+  'Skraldespand tømt','Gulv vasket og helt tørt – ingen glidefare','Vinduer tørret af indvendigt'
+ ]},
+ {id:'gang',icon:'🚪',name:'Gang / entré',items:[
+  'Støv tørret af i hjørner – både oppe og nede','Vindueskarm tørret af','Dørkarme tørret af','Gulv fejet og vasket'
+ ]},
+ {id:'planter',icon:'🪴',name:'Planter vandet',items:['Stue','Køkken','Badeværelse','Udestue']},
+ {id:'aflob',icon:'🚰',name:'Kogende vand i afløb',items:['Køkken','Badeværelse','Gæstetoilet']},
+ {id:'varme',icon:'🌡️',name:'Radiatorer & varmeovne — slukket om sommeren',items:[
+  'Radiator i stuen','Varmeovn i stuen','Radiator i køkkenet','Radiator på soveværelse 2 (midterste)','Varmeovn på badeværelset'
+ ]},
+ {id:'udenfor',icon:'🌤️',name:'Udenfor',imgs:['udenfor-1','udenfor-2','udenfor-3','udenfor-4'],items:[
+  'Grill tjekket ren – hvis ikke: tænd gassen, varm den op, gør den ren, og husk at slukke gassen igen',
+  'Havemøbler tjekket – fri for pletter og stillet pænt op','Fejet og pænt udenfor (hvis havemanden ikke allerede har gjort det)',
+  'Have/græsplæne tjekket – Navimow kører som den skal',
+  'Meldt regn inden/samme dag som ankomst? Hynder oppe under halvtaget, hynder på terrassen i hyndeboksen, parasoller ned, sofapude ved vandet med op under halvtaget'
+ ]},
+ {id:'generelt',icon:'✅',name:'Generelt — sidste tjek',imgs:['drivhus-1'],items:[
+  'Luftet grundigt ud i alle rum','Alle vinduer lukket og låst','Nøgle til gæsterne lagt i vandkanden i drivhuset',
+  'Postkassen tømt – evt. billede af breve/regninger sendt til Wendie','Sidste lugt-tjek i hvert rum – ingen dyre-, fugt- eller madlugt',
+  'Alt lys tændt/slukket for at tjekke pærer','Brandalarmer tjekket',
+  'Tjek hele huset for glemte ting fra forrige gæster – læg eventuelle fund i en pose mærket med gæstens navn',
+  'Til allersidst, inden du låser af: sprøjt sofapuder og gardiner med duft'
+ ]}
+];
+
+let WHO='';
+let checkState={}; // key: room_i -> {checked,checked_by}
+const sk=(r,i)=>r+'_'+i;
+
+function lsGet(k){try{return localStorage.getItem(k)||''}catch(e){return''}}
+function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+
+document.getElementById('whoSelect').addEventListener('change',e=>{
+ document.getElementById('whoOther').style.display=e.target.value==='__other'?'block':'none';
+});
+document.getElementById('startBtn').addEventListener('click',async()=>{
+ const sel=document.getElementById('whoSelect').value;
+ const name=sel==='__other'?document.getElementById('whoOther').value.trim():sel;
+ if(!name){alert('Vælg eller skriv dit navn først');return;}
+ WHO=name; lsSet('bh_who',name);
+ await boot();
+});
+document.getElementById('switchWho').addEventListener('click',e=>{
+ e.preventDefault();
+ document.getElementById('app').style.display='none';
+ document.getElementById('gate').style.display='block';
+});
+
+async function boot(){
+ document.getElementById('gate').style.display='none';
+ document.getElementById('app').style.display='block';
+ document.getElementById('whoLabel').textContent=WHO;
+ document.getElementById('turnoverBox').innerHTML=`<b>${turnover.txt}</b><br>${turnover.date}`;
+ await loadState();
+ renderChecklist();
+ subscribeRealtime();
+}
+
+async function loadState(){
+ const {data,error}=await sb.from('checklist_checks').select('*').eq('turnover_id',turnover.id);
+ checkState={};
+ if(data)data.forEach(row=>{checkState[sk(row.room_id,row.item_index)]={checked:row.checked,by:row.checked_by};});
+}
+
+function subscribeRealtime(){
+ sb.channel('checks-'+turnover.id)
+  .on('postgres_changes',{event:'*',schema:'public',table:'checklist_checks',filter:`turnover_id=eq.${turnover.id}`},payload=>{
+   const row=payload.new&&payload.new.id?payload.new:payload.old;
+   if(!row)return;
+   if(payload.eventType==='DELETE'){delete checkState[sk(row.room_id,row.item_index)];}
+   else{checkState[sk(row.room_id,row.item_index)]={checked:row.checked,by:row.checked_by};}
+   renderChecklist();
+  }).subscribe();
+}
+
+async function toggleItem(roomId,i,itemText,checked){
+ checkState[sk(roomId,i)]={checked,by:WHO};
+ renderChecklist();
+ await sb.from('checklist_checks').upsert({
+  turnover_id:turnover.id,room_id:roomId,item_index:i,item_text:itemText,checked,checked_by:WHO,checked_at:new Date().toISOString()
+ },{onConflict:'turnover_id,room_id,item_index'});
+}
+
+const chkGrid=document.getElementById('chkGrid');
+function renderChecklist(){
+ let doneTotal=0,itemTotal=0,html='';
+ checklistRooms.forEach(r=>{
+  let doneCount=0;
+  const items=r.items.map((txt,i)=>{
+   const st=checkState[sk(r.id,i)]||{};
+   const checked=!!st.checked;
+   if(checked)doneCount++;
+   const id='chk_'+r.id+'_'+i;
+   const by=checked&&st.by?`<span class="by">✓ ${st.by}</span>`:'';
+   return `<li class="${checked?'done':''}"><input type="checkbox" id="${id}" data-room="${r.id}" data-i="${i}" ${checked?'checked':''}><label for="${id}">${txt}${by}</label></li>`;
+  }).join('');
+  doneTotal+=doneCount;itemTotal+=r.items.length;
+  const complete=doneCount===r.items.length;
+  const gallery=(r.imgs&&r.imgs.length)?`<div class="rgallery">${r.imgs.map(g=>`<a href="assets/img/rooms/full/${g}.jpg" target="_blank"><img src="assets/img/rooms/thumb/${g}.jpg" alt="Sådan skal ${r.name} se ud når det er klart"></a>`).join('')}</div>`:'';
+  const sub=r.sub?`<p class="rnote">${r.sub}</p>`:'';
+  html+=`<div class="room-card${complete?' complete':''}">
+   <h3>${r.icon} ${r.name}</h3>
+   ${gallery}${sub}
+   <p class="rprog"><b>${doneCount}/${r.items.length}</b> gjort${complete?' · ✓ færdig':''}</p>
+   <ul class="chk-list">${items}</ul>
+  </div>`;
+ });
+ chkGrid.innerHTML=html;
+ document.getElementById('progressLabel').textContent=`${doneTotal}/${itemTotal}`;
+ document.getElementById('barFill').style.width=itemTotal?Math.round(doneTotal/itemTotal*100)+'%':'0%';
+ chkGrid.querySelectorAll('input[type=checkbox]').forEach(cb=>{
+  cb.addEventListener('change',()=>{
+   const r=cb.dataset.room,i=+cb.dataset.i;
+   const room=checklistRooms.find(x=>x.id===r);
+   toggleItem(r,i,room.items[i],cb.checked);
+  });
+ });
+}
+
+document.getElementById('sendComment').addEventListener('click',async()=>{
+ const txt=document.getElementById('commentText').value.trim();
+ if(!txt)return;
+ await sb.from('comments').insert({turnover_id:turnover.id,author:WHO||'Ukendt',message:txt});
+ document.getElementById('commentText').value='';
+ const note=document.getElementById('sentNote');
+ note.style.display='block';
+ setTimeout(()=>note.style.display='none',3000);
+});
+
+// husk seneste navn
+const remembered=lsGet('bh_who');
+if(remembered){
+ const sel=document.getElementById('whoSelect');
+ const opt=[...sel.options].find(o=>o.value===remembered);
+ if(opt)sel.value=remembered;
+ else{sel.value='__other';document.getElementById('whoOther').style.display='block';document.getElementById('whoOther').value=remembered;}
+}
+</script>
+</body>
+</html>
