@@ -32,9 +32,11 @@ h2{font-size:17px;margin:32px 0 6px}
 /* ---- continuous scrollable calendar ---- */
 .calwrap{background:var(--card);border:1px solid var(--line);border-radius:16px;
  box-shadow:0 1px 3px rgba(19,36,58,.05);overflow:hidden}
-.calscroll{max-height:560px;overflow-y:auto;padding:0 14px 16px}
-.calscroll::-webkit-scrollbar{width:10px}
+.calscroll{max-height:560px;overflow-y:auto;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:0 14px 16px}
+.calscroll::-webkit-scrollbar{width:10px;height:10px}
 .calscroll::-webkit-scrollbar-thumb{background:#cdd9e5;border-radius:999px;border:3px solid var(--card)}
+.calinner{min-width:640px}
+.swipehint{display:none}
 .dowhead{position:sticky;top:0;z-index:3;background:var(--card);
  display:grid;grid-template-columns:repeat(7,1fr);gap:6px;
  padding:12px 0 8px;border-bottom:1px solid var(--line)}
@@ -87,6 +89,7 @@ table.bk{width:100%;border-collapse:collapse;font-size:13px}
 table.bk th,table.bk td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
 table.bk th{background:var(--sea-soft);color:var(--sea);font-size:11px;text-transform:uppercase;letter-spacing:.04em}
 table.bk tr:last-child td{border-bottom:none}
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .chip{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;color:#fff}
 .sub{color:var(--muted);font-size:12px}
 details{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-top:10px}
@@ -129,6 +132,14 @@ summary{cursor:pointer;padding:13px 16px;font-weight:600;font-size:14px}
 .btn.ok{border-color:var(--ok);color:var(--ok)}
 .btn.ok.solid{background:var(--ok);color:#fff}
 .sent-note{font-size:12px;color:var(--ok);font-weight:600;margin-top:8px;display:none}
+@media (max-width:680px){
+.wrap{padding:16px 12px 40px}
+header h1{font-size:20px}
+.stat{min-width:118px;padding:11px 12px}
+.stat .n{font-size:19px}
+.chk-grid{grid-template-columns:1fr}
+.swipehint{display:block;color:var(--sea);font-weight:600;font-size:12px;margin:0 0 8px}
+}
 @media print{.foot{display:none}body{background:#fff}.calscroll{max-height:none;overflow:visible}#chkResetBtn{display:none}}
 </style>
 </head>
@@ -147,31 +158,37 @@ summary{cursor:pointer;padding:13px 16px;font-weight:600;font-size:14px}
 </div>
 
 <h2>📅 Kalender</h2>
-<p class="hint">Én sammenhængende kalender — scroll ned gennem sommeren. <b style="color:var(--rent)">Blå dage</b> er udlejet. <b style="color:#9a6b14">Gule dage + 🧹</b> er skifte- og klargøringsdage: både selve ud-/ind-tjek-dagene og alle dage imellem to bookinger har samme gule farve, så du nemt ser hvilke dage et skift dækker. <b style="color:var(--block)">Lilla dage 🏠</b> er blokeret til eget brug — så står du selv for rengøring.</p>
+<p class="hint">Én sammenhængende kalender — scroll ned gennem sommeren. <b style="color:var(--rent)">Blå dage</b> er udlejet. <b style="color:#9a6b14">Gule dage + 🧹</b> er skifte- og klargøringsdage: både selve ud-/ind-tjek-dagene og alle dage imellem to bookinger har samme gule farve, så det er nemt at se hvilke dage et skift dækker. <b style="color:var(--block)">Lilla dage 🏠</b> er blokeret til Wendies eget brug — her klarer hun som udgangspunkt selv rengøringen.</p>
 <div class="legend" id="legend"></div>
 <div class="editbar">
-<button class="btn" id="editBtn">✏️ Bloker dage til eget brug</button>
+<button class="btn" id="editBtn">🏠 Bloker dage til Wendies eget brug</button>
 <span class="editnote">Klik på en ledig dag for at blokere/frigive den. Gemmes automatisk.</span>
 </div>
+<p class="swipehint">👉 Swip til siderne i kalenderen for at se hele ugen.</p>
 <div class="calwrap">
 <div class="calscroll">
+<div class="calinner">
 <div class="dowhead"><div>Ma</div><div>Ti</div><div>On</div><div>To</div><div>Fr</div><div>Lø</div><div>Sø</div></div>
 <div class="grid" id="grid"></div>
 </div>
 </div>
+</div>
 
 <h2>🧹 Rengøringsplan — hvem gør rent?</h2>
-<p class="hint">Skriv navnet på den, der står for rengøring/klargøring. Hver person får automatisk sin egen farve i kalenderen, så snart navnet er skrevet — fx Emilie, Katrine og Emilies veninde. Gør du det selv (skriv "Dig selv" eller dit navn, eller blokér huset), bliver dagen pink. Du kan altid overskrive med et andet navn, hvis en anden skal gøre rent — også selvom du bruger huset. Hvor der står et datointerval, kan dagen vælges frit. Det gemmes automatisk — sæt flueben når det er gjort.</p>
+<p class="hint">Skriv navnet på den, der står for rengøring/klargøring. Hver person får automatisk sin egen farve i kalenderen, så snart navnet er skrevet — fx Emilie, Katrine eller en anden. Når Wendie selv gør rent (skrevet som "Wendie", eller når huset er blokeret til eget brug), bliver dagen pink. Feltet kan altid ændres til et andet navn, hvis en anden skal gøre rent i stedet — også i perioder hvor huset er blokeret. Hvor der står et datointerval, kan dagen vælges frit. Det gemmes automatisk — sæt flueben når det er gjort.</p>
 <div class="legend" id="cleanLegend" style="margin-top:0"></div>
 <div class="card">
+<div class="tablewrap">
 <table class="plan">
 <thead><tr><th style="width:96px">Dato</th><th>Skift</th><th style="width:200px">Ansvarlig for rengøring</th><th style="width:56px">Gjort</th></tr></thead>
 <tbody id="planBody"></tbody>
 </table>
 </div>
+</div>
 
 <h2>Bookinger (detaljer)</h2>
 <div class="card">
+<div class="tablewrap">
 <table class="bk">
 <thead><tr><th>Gæst</th><th>Kanal</th><th>Check-in</th><th>Check-out</th><th>Gæster</th></tr></thead>
 <tbody>
@@ -184,6 +201,7 @@ summary{cursor:pointer;padding:13px 16px;font-weight:600;font-size:14px}
 <tr><td><b>Tamara Šichová</b></td><td><span class="chip" style="background:#16a3a3">Airbnb</span></td><td>30. aug</td><td>6. sep</td><td>2 voksne<div class="sub">1 kæledyr</div></td></tr>
 </tbody>
 </table>
+</div>
 </div>
 
 <h2>🧹 Klargøringstjekliste — værelse for værelse</h2>
@@ -319,14 +337,14 @@ function isOwnUse(p){return p.free && p.free.some(d=>blocked.has(key(d[0],d[1],d
 const SELF_COLOR='#e84393';
 const SELF_NAMES=['dig selv','mig','mig selv','wendie','wendi'];
 const PALETTE=['#2f9e7e','#e0742e','#0f9bbf','#9c8400','#6b8e23'];
-function planName(p){const v=(lsGet('bh_clean_'+p.id)||'').trim();return v?v:(p.who||(isOwnUse(p)?'Dig selv':''));}
+function planName(p){const v=(lsGet('bh_clean_'+p.id)||'').trim();return v?v:(p.who||(isOwnUse(p)?'Wendie':''));}
 function cleanerColors(){
  const map={};let i=0;
  plan.forEach(p=>{
   const nm=planName(p);if(!nm)return;
   const kn=nm.toLowerCase();
   if(map[kn])return;
-  if(SELF_NAMES.includes(kn))map[kn]={color:SELF_COLOR,name:'Dig selv'};
+  if(SELF_NAMES.includes(kn))map[kn]={color:SELF_COLOR,name:'Wendie'};
   else map[kn]={color:PALETTE[i++%PALETTE.length],name:nm};
  });
  return map;
@@ -414,7 +432,7 @@ editBtn.addEventListener('click',()=>{
  document.body.classList.toggle('editing');
  const on=document.body.classList.contains('editing');
  editBtn.classList.toggle('on',on);
- editBtn.textContent=on?'✓ Færdig med at blokere':'✏️ Bloker dage til eget brug';
+ editBtn.textContent=on?'✓ Færdig med at blokere':'🏠 Bloker dage til Wendies eget brug';
 });
 grid.addEventListener('click',e=>{
  if(!document.body.classList.contains('editing'))return;
@@ -436,10 +454,10 @@ function renderPlan(){
     :p.tight?'<span class="badge">samme dag</span>'
     :(p.freeBadge?'<span class="badge free">vælg dag</span>':'');
   const skift=`${p.txt}${p.tight&&!own?'<div class="tight">⚠ kun timerne mellem ud kl. 10 og ind kl. 16</div>':''}`
-    +(own?'<div class="ownnote">🏠 Du bruger huset i denne periode — du står som standard selv for rengøring. Skriv et andet navn for at lade en anden gøre det.</div>':'');
+    +(own?'<div class="ownnote">🏠 Wendie bruger huset i denne periode — hun står som standard selv for rengøring. Skriv et andet navn for at lade en anden gøre det.</div>':'');
   const col=colorForPlan(p);
   const dot=`<i class="sw" style="margin-right:7px;flex:0 0 auto;background:${col||'transparent'};${col?'':'border:1px dashed var(--line)'}"></i>`;
-  const ph=own?'Dig selv (eget brug)':'Navn…';
+  const ph=own?'Wendie (eget brug)':'Navn…';
   const preset=lsGet('bh_clean_'+p.id)||(p.who||'');
   const resp=`<span style="display:flex;align-items:center">${dot}<input class="who-in" type="text" placeholder="${ph}" value="${preset.replace(/"/g,'&quot;')}"></span>`;
   tr.innerHTML=`<td class="date">${p.date}<br>${tag}</td>
