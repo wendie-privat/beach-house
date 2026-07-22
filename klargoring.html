@@ -3,102 +3,251 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Beach House — Klargøring</title>
+<title>The Beach House – Booking & Rengøring · Sommer 2026</title>
 <style>
 :root{color-scheme:light;
 --bg:#eef3f7;--card:#ffffff;--ink:#13243a;--muted:#5b6b7f;--line:#e3e9f0;
---sea:#1d6fa5;--sea-soft:#e7f1f8;--ok:#2f9e7e;--warn:#d98324;}
+--sea:#1d6fa5;--sea-soft:#e7f1f8;--ok:#2f9e7e;--warn:#d98324;--prep:#e0a13a;--prepbg:#fff6e2;
+--rent:#1d6fa5;--rentbg:#e2f0f9;--block:#7b5cd6;--blockbg:#efeafc;}
 *{box-sizing:border-box}
-body{margin:0;background:radial-gradient(1200px 420px at 50% -120px,#dff0fb 0%,rgba(223,240,251,0) 70%),var(--bg);
- color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.5}
-.wrap{max-width:720px;margin:0 auto;padding:22px 16px 70px}
-h1{margin:0 0 4px;font-size:22px}
-header p{margin:0;color:var(--muted);font-size:13px}
-h2{font-size:16px;margin:26px 0 6px}
+body{margin:0;background:
+ radial-gradient(1200px 420px at 50% -120px,#dff0fb 0%,rgba(223,240,251,0) 70%),var(--bg);
+ color:var(--ink);
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.5}
+.wrap{max-width:1060px;margin:0 auto;padding:26px 18px 60px}
+header h1{margin:0 0 4px;font-size:26px}
+header p{margin:0;color:var(--muted);font-size:14px}
+.stats{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 16px;flex:1;min-width:140px;box-shadow:0 1px 2px rgba(19,36,58,.04)}
+.stat .n{font-size:22px;font-weight:700}
+.stat .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+h2{font-size:17px;margin:32px 0 6px}
 .hint{color:var(--muted);font-size:13px;margin:0 0 12px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:0 1px 3px rgba(19,36,58,.05)}
-.who-card{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
-select,input[type=text],textarea{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:15px;font-family:inherit;background:#fcfdff}
-select:focus,input:focus,textarea:focus{outline:none;border-color:var(--sea);background:#fff}
-label.lbl{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:5px}
-.turnover-box{background:var(--sea-soft);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:14px;font-size:14px}
-.turnover-box b{color:var(--sea)}
-.progress-top{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0;margin:0 0 6px;display:flex;align-items:center;gap:10px}
-.bar{flex:1;height:8px;border-radius:999px;background:var(--line);overflow:hidden}
-.bar i{display:block;height:100%;background:var(--ok);transition:width .2s}
-.progress-top span{font-size:12px;color:var(--muted);font-weight:700;white-space:nowrap}
-.room-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(19,36,58,.05);transition:border-color .15s,background .15s}
-.room-card.complete{border-color:var(--ok);background:linear-gradient(180deg,#f2faf7,var(--card) 46px)}
-.room-card h3{margin:0 0 4px;font-size:15px;display:flex;align-items:center;gap:6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(19,36,58,.05)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin:10px 2px 16px;font-size:12px}
+.legend span{display:flex;align-items:center;gap:6px}
+.sw{width:14px;height:14px;border-radius:5px;display:inline-block}
+.sw.prepkey{background:var(--prepbg);border:2px dashed var(--prep)}
+
+/* ---- continuous scrollable calendar ---- */
+.calwrap{background:var(--card);border:1px solid var(--line);border-radius:16px;
+ box-shadow:0 1px 3px rgba(19,36,58,.05);overflow:hidden}
+.calscroll{max-height:560px;overflow-y:auto;padding:0 14px 16px}
+.calscroll::-webkit-scrollbar{width:10px}
+.calscroll::-webkit-scrollbar-thumb{background:#cdd9e5;border-radius:999px;border:3px solid var(--card)}
+.dowhead{position:sticky;top:0;z-index:3;background:var(--card);
+ display:grid;grid-template-columns:repeat(7,1fr);gap:6px;
+ padding:12px 0 8px;border-bottom:1px solid var(--line)}
+.dowhead div{font-size:11px;color:var(--muted);text-align:center;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding-top:6px}
+.mhead{grid-column:1/-1;display:flex;align-items:center;gap:10px;
+ margin:10px 0 2px;font-size:13px;font-weight:800;letter-spacing:.04em;color:var(--sea);text-transform:uppercase}
+.mhead::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+.cell{min-height:74px;border-radius:10px;border:1px solid var(--line);padding:5px 6px;font-size:10px;position:relative;background:#fbfcfe;transition:transform .08s}
+.cell:hover{transform:translateY(-1px)}
+.cell .dn{font-weight:700;font-size:12px;color:var(--ink)}
+.cell .who{display:block;margin-top:2px;font-weight:700;line-height:1.15;font-size:11px}
+.cell .mk{display:block;font-size:9px;color:var(--muted);margin-top:2px;line-height:1.2}
+.cell.blank{background:transparent;border:none}
+.cell.out{background:#f4f7fa;opacity:.5}
+.cell.prep{outline:2px dashed var(--prep);outline-offset:-2px}
+.cell .clean{position:absolute;top:3px;right:4px;font-size:12px}
+.cell .dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%}
+.cell.today{box-shadow:0 0 0 2px var(--sea) inset;position:relative}
+.cell.today::after{content:"I DAG";position:absolute;bottom:3px;left:6px;font-size:8px;font-weight:800;letter-spacing:.04em;color:var(--sea)}
+.cell.past{opacity:.4;filter:saturate(.65)}
+.cell.past:hover{transform:none}
+/* edit/block mode */
+.editbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:6px 0 12px}
+.btn{border:1.5px solid var(--block);background:var(--card);color:var(--block);
+ font:600 13px/1 inherit;padding:9px 14px;border-radius:10px;cursor:pointer}
+.btn.on{background:var(--block);color:#fff}
+.editnote{font-size:12px;color:var(--block);font-weight:600;display:none}
+body.editing .editnote{display:inline}
+body.editing .calscroll .cell:not(.out):not(.rented){cursor:pointer}
+body.editing .calscroll .cell:not(.out):not(.rented):hover{outline:2px solid var(--block);outline-offset:-2px}
+body.editing .calscroll .cell.rented{cursor:not-allowed}
+
+.plan{width:100%;border-collapse:collapse;font-size:13px}
+.plan th,.plan td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+.plan th{background:var(--sea-soft);color:var(--sea);font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+.plan tr:last-child td{border-bottom:none}
+.plan .date{font-weight:700;white-space:nowrap}
+.plan .tight{color:var(--warn);font-weight:700;font-size:11px}
+.plan input.who-in{width:100%;border:1.5px solid var(--line);border-radius:8px;padding:7px 9px;font-size:13px;font-family:inherit;background:#fcfdff}
+.plan input.who-in:focus{outline:none;border-color:var(--sea);background:#fff}
+.plan .done{accent-color:var(--ok);width:18px;height:18px;cursor:pointer}
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;background:#fdeede;color:var(--warn)}
+.badge.free{background:var(--prepbg);color:#9a6b14}
+.badge.own{background:var(--blockbg);color:var(--block)}
+tr.ownrow{background:var(--blockbg)}
+.ownuse{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--block);font-size:13px}
+.ownnote{color:var(--block);font-weight:600;font-size:11px;margin-top:3px}
+table.bk{width:100%;border-collapse:collapse;font-size:13px}
+table.bk th,table.bk td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+table.bk th{background:var(--sea-soft);color:var(--sea);font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+table.bk tr:last-child td{border-bottom:none}
+.chip{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;color:#fff}
+.sub{color:var(--muted);font-size:12px}
+details{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-top:10px}
+summary{cursor:pointer;padding:13px 16px;font-weight:600;font-size:14px}
+.det-body{padding:0 16px 14px;font-size:13px;color:var(--muted)}
+.foot{margin-top:26px;color:var(--muted);font-size:12px;text-align:center}
+
+/* ---- klargøringstjekliste ---- */
+.chk-section-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin:10px 2px 16px}
+.chk-progress{font-size:13px;color:var(--muted);font-weight:600}
+.chk-progress b{color:var(--ok)}
+.btn.reset{border-color:var(--muted);color:var(--muted)}
+.chk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.room-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:0 1px 3px rgba(19,36,58,.05);transition:border-color .15s,background .15s}
+.room-card h3{margin:0 0 4px;font-size:14px;display:flex;align-items:center;gap:6px}
 .room-card .rprog{font-size:11px;color:var(--muted);margin:0 0 10px;font-weight:600}
 .room-card .rprog b{color:var(--ok)}
-.room-card .rnote{font-size:11.5px;color:var(--sea);background:var(--sea-soft);border-radius:8px;padding:7px 9px;margin:0 0 10px;line-height:1.4}
-.rgallery{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}
-.rgallery a{flex:1 1 64px;max-width:90px;display:block}
-.rgallery img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:8px;border:1px solid var(--line)}
-.chk-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
-.chk-list li{display:flex;align-items:flex-start;gap:9px;font-size:13.5px;line-height:1.4}
-.chk-list input{margin-top:2px;accent-color:var(--ok);width:19px;height:19px;flex:0 0 auto;cursor:pointer}
+.chk-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+.chk-list li{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;line-height:1.35}
+.chk-list input{margin-top:2px;accent-color:var(--ok);width:16px;height:16px;flex:0 0 auto;cursor:pointer}
+.chk-list input:disabled{cursor:not-allowed;opacity:.5}
 .chk-list label{cursor:pointer}
 .chk-list li.done label{color:var(--muted);text-decoration:line-through}
-.chk-list .by{display:block;font-size:10.5px;color:var(--muted);font-weight:600;margin-top:1px}
-.gate{max-width:360px;margin:80px auto;text-align:center}
-.gate select{margin-bottom:12px}
-.btn{border:1.5px solid var(--sea);background:var(--card);color:var(--sea);
- font:600 14px/1 inherit;padding:11px 16px;border-radius:10px;cursor:pointer;width:100%}
-.btn.solid{background:var(--sea);color:#fff}
+.chk-list .by{display:block;font-size:10px;color:var(--ok);font-weight:700;margin-top:1px}
+.room-card.complete{border-color:var(--ok);background:linear-gradient(180deg,#f2faf7,var(--card) 46px)}
+.room-card .rgallery{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}
+.room-card .rgallery a{flex:1 1 64px;max-width:90px;display:block}
+.room-card .rgallery img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:8px;border:1px solid var(--line)}
+.room-card .rnote{font-size:11.5px;color:var(--sea);background:var(--sea-soft);border-radius:8px;padding:7px 9px;margin:0 0 10px;line-height:1.4}
+.chk-common{background:var(--sea-soft);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:0 0 14px;font-size:13px}
+.chk-common b{color:var(--sea)}
+.chk-common ul{margin:6px 0 0;padding-left:18px}
+.chk-common li{margin:4px 0}
+.whobox{background:#fff;border:1.5px dashed var(--sea)}
+.whobox select,.whobox input[type=text]{border:1.5px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;font-family:inherit;background:#fcfdff;max-width:220px}
+.whobox select:focus,.whobox input:focus{outline:none;border-color:var(--sea);background:#fff}
+.needwho{color:var(--warn);font-weight:600}
+.commentbox textarea{width:100%;min-height:74px;resize:vertical;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit;background:#fcfdff;margin-bottom:8px}
+.commentbox textarea:focus{outline:none;border-color:var(--sea);background:#fff}
 .btn.ok{border-color:var(--ok);color:var(--ok)}
 .btn.ok.solid{background:var(--ok);color:#fff}
-.commentbox textarea{min-height:80px;resize:vertical;margin-bottom:8px}
 .sent-note{font-size:12px;color:var(--ok);font-weight:600;margin-top:8px;display:none}
-.foot{margin-top:26px;color:var(--muted);font-size:11px;text-align:center}
-#app{display:none}
+@media print{.foot{display:none}body{background:#fff}.calscroll{max-height:none;overflow:visible}#chkResetBtn{display:none}}
 </style>
 </head>
 <body>
 <div class="wrap">
-
-<div class="gate" id="gate">
- <h1>🏖️ The Beach House</h1>
- <p class="hint">Vælg dit navn for at åbne dagens klargøringstjekliste.</p>
- <div class="card">
-  <label class="lbl">Hvem er du?</label>
-  <select id="whoSelect">
-   <option value="">Vælg…</option>
-   <option value="Emilie">Emilie</option>
-   <option value="Katrine">Katrine</option>
-   <option value="__other">Andet navn…</option>
-  </select>
-  <input type="text" id="whoOther" placeholder="Skriv dit navn" style="display:none;margin-top:8px">
-  <button class="btn solid" id="startBtn" style="margin-top:12px">Start klargøring →</button>
- </div>
-</div>
-
-<div id="app">
 <header>
-<h1>🏖️ The Beach House</h1>
-<p>Klargøringstjekliste · <span id="whoLabel"></span> <a href="#" id="switchWho" style="color:var(--sea);font-size:12px;margin-left:6px">(skift navn)</a></p>
+<h1>🏖️ The Beach House — Booking & Rengøring</h1>
+<p>Charmerende sommerhus direkte ud til stranden · Trelde Næsvej 95, 7000 Fredericia · 3 soverum, 6 sengepladser · Sommer 2026</p>
 </header>
 
-<div class="turnover-box" id="turnoverBox"></div>
-
-<div class="progress-top">
- <div class="bar"><i id="barFill" style="width:0%"></i></div>
- <span id="progressLabel">0/0</span>
+<div class="stats">
+<div class="stat"><div class="n">7</div><div class="l">Bookinger</div></div>
+<div class="stat"><div class="n">49</div><div class="l">Udlejede nætter</div></div>
+<div class="stat"><div class="n">8</div><div class="l">Klargøringer</div></div>
+<div class="stat"><div class="n">3</div><div class="l">Samme-dags-skift</div></div>
 </div>
 
-<div id="chkGrid"></div>
+<h2>📅 Kalender</h2>
+<p class="hint">Én sammenhængende kalender — scroll ned gennem sommeren. <b style="color:var(--rent)">Blå dage</b> er udlejet. <b style="color:#9a6b14">Gule dage + 🧹</b> er skifte- og klargøringsdage: både selve ud-/ind-tjek-dagene og alle dage imellem to bookinger har samme gule farve, så du nemt ser hvilke dage et skift dækker. <b style="color:var(--block)">Lilla dage 🏠</b> er blokeret til eget brug — så står du selv for rengøring.</p>
+<div class="legend" id="legend"></div>
+<div class="editbar">
+<button class="btn" id="editBtn">✏️ Bloker dage til eget brug</button>
+<span class="editnote">Klik på en ledig dag for at blokere/frigive den. Gemmes automatisk.</span>
+</div>
+<div class="calwrap">
+<div class="calscroll">
+<div class="dowhead"><div>Ma</div><div>Ti</div><div>On</div><div>To</div><div>Fr</div><div>Lø</div><div>Sø</div></div>
+<div class="grid" id="grid"></div>
+</div>
+</div>
+
+<h2>🧹 Rengøringsplan — hvem gør rent?</h2>
+<p class="hint">Skriv navnet på den, der står for rengøring/klargøring. Hver person får automatisk sin egen farve i kalenderen, så snart navnet er skrevet — fx Emilie, Katrine og Emilies veninde. Gør du det selv (skriv "Dig selv" eller dit navn, eller blokér huset), bliver dagen pink. Du kan altid overskrive med et andet navn, hvis en anden skal gøre rent — også selvom du bruger huset. Hvor der står et datointerval, kan dagen vælges frit. Det gemmes automatisk — sæt flueben når det er gjort.</p>
+<div class="legend" id="cleanLegend" style="margin-top:0"></div>
+<div class="card">
+<table class="plan">
+<thead><tr><th style="width:96px">Dato</th><th>Skift</th><th style="width:200px">Ansvarlig for rengøring</th><th style="width:56px">Gjort</th></tr></thead>
+<tbody id="planBody"></tbody>
+</table>
+</div>
+
+<h2>Bookinger (detaljer)</h2>
+<div class="card">
+<table class="bk">
+<thead><tr><th>Gæst</th><th>Kanal</th><th>Check-in</th><th>Check-out</th><th>Gæster</th></tr></thead>
+<tbody>
+<tr><td><b>Ørjan Vermeer</b><div class="sub">Bergen · +47 975 98 479</div></td><td><span class="chip" style="background:#2f9e7e">Privat</span></td><td>12. jul<div class="sub">16:00</div></td><td>21. jul<div class="sub">10:00</div></td><td>2 voksne + 3 børn<div class="sub">1 hund</div></td></tr>
+<tr><td><b>Cindy Nillesen</b></td><td><span class="chip" style="background:#d65a73">Airbnb</span></td><td>22. jul</td><td>29. jul</td><td>3 voksne, 1 barn<div class="sub">1 kæledyr</div></td></tr>
+<tr><td><b>Katrijn Van Meervenne</b><div class="sub">Gent, BE · +32 473 95 14 01</div></td><td><span class="chip" style="background:#e0913a">Privat</span></td><td>29. jul<div class="sub">16:00</div></td><td>4. aug<div class="sub">10:00</div></td><td>op til 6<div class="sub">1 hund</div></td></tr>
+<tr><td><b>Urs Affolter</b></td><td><span class="chip" style="background:#5b8def">Airbnb</span></td><td>4. aug</td><td>9. aug</td><td>3 voksne</td></tr>
+<tr><td><b>Pascal Groot &amp; Nicoline</b><div class="sub">Dorst, NL · +31 640 196 800</div></td><td><span class="chip" style="background:#9b59b6">Privat</span></td><td>9. aug<div class="sub">16:00</div></td><td>19. aug<div class="sub">10:00</div></td><td>op til 6<div class="sub">2 hunde</div></td></tr>
+<tr><td><b>Sarah Naumann</b></td><td><span class="chip" style="background:#e2725b">Airbnb</span></td><td>23. aug</td><td>28. aug</td><td>6 voksne, 1 spædbarn<div class="sub">2 kæledyr</div></td></tr>
+<tr><td><b>Tamara Šichová</b></td><td><span class="chip" style="background:#16a3a3">Airbnb</span></td><td>30. aug</td><td>6. sep</td><td>2 voksne<div class="sub">1 kæledyr</div></td></tr>
+</tbody>
+</table>
+</div>
+
+<h2>🧹 Klargøringstjekliste — værelse for værelse</h2>
+<p class="hint" id="chkHint">Gå huset igennem rum for rum, så der ikke er noget de nye gæster kan sætte en finger på. Billederne i hvert kort viser, hvordan rummet skal se ud når det er helt klart. Listen deles live med de andre, der klargør huset — I ser med det samme, hvad hinanden har krydset af.</p>
+<div class="chk-common">
+<b>🪟 Fælles for hele huset</b>
+<ul>
+<li>Alle vinduer tørres af <b>indvendigt</b> med den grønne pudseklud (udvendigt klarer vinduespudseren hver 4. uge).</li>
+<li>Sengetøj: vælg altid <b>matchende sæt på tværs af alle senge</b> der bruges — fx alt hvidt eller alt stribet/brunt, aldrig blandet.</li>
+<li>Håndklæder til gæsterne lægges frem på sengene — 2 stk. pr. person (1 stort + 1 lille). Tjek for pletter; læg pletfyldte til side, så tager Wendie sig af dem.</li>
+<li>Der ligges <b>ikke</b> en fysisk velkomstmappe frem — gæsterne får alt digitalt.</li>
+<li>Vasketøj: 60° hurtigvask. Sol → hængt til tørre udenfor på så mange stativer som nødvendigt. Ikke sol → hængt til tørre i <b>mellemgangen</b>, klar til næste gang.</li>
+<li>Glemte ting fra forrige gæster: læg dem i en pose mærket med gæstens navn, så Wendie kan sende dem videre.</li>
+</ul>
+</div>
+<div class="chk-common">
+<b>♻️ Sådan sorterer vi (Fredericia Kommune)</b>
+<ul>
+<li><b>Mad- og restaffald:</b> i den todelte spand ude.</li>
+<li><b>Papir:</b> aviser, reklamer, kuverter og skrivepapir.</li>
+<li><b>Pap:</b> papkasser og bølgepap — foldet sammen.</li>
+<li><b>Glas &amp; metal:</b> flasker, glas, konservesdåser, kapsler og folie.</li>
+<li><b>Plast:</b> blød og hård plast samlet i én kasse.</li>
+<li><b>Kartoner:</b> mælke- og juicekartoner (dem med skruelåg er vigtigst at få rigtigt).</li>
+</ul>
+<p style="margin:8px 0 0;color:var(--muted)">Skyl gerne emballagen. Poser der skal til genbrugspladsen sorteres på samme måde og sættes i garagen, klar til afhentning.</p>
+</div>
+<div class="chk-common whobox">
+<b>👋 Hvem er du?</b>
+<p class="hint" style="margin:4px 0 8px">Vælg dit navn, så du kan krydse af på tjeklisten, og alle kan se hvem der har gjort hvad. Huskes til næste gang.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+<select id="whoSelect">
+<option value="">Vælg…</option>
+<option value="Emilie">Emilie</option>
+<option value="Katrine">Katrine</option>
+<option value="__other">Andet navn…</option>
+</select>
+<input type="text" id="whoOther" placeholder="Skriv dit navn" style="display:none">
+</div>
+</div>
+<div class="chk-section-top">
+<div class="chk-progress" id="chkProgress"></div>
+<button class="btn reset" id="chkResetBtn">↺ Nulstil tjekliste (nyt skifte)</button>
+</div>
+<div class="chk-grid" id="chkGrid"></div>
 
 <h2>✉️ Mangler der noget i huset?</h2>
 <p class="hint">Fx lyspærer, batterier, sæbe, opvasketabs — skriv det her, så ser Wendie det med det samme.</p>
-<div class="card commentbox">
- <textarea id="commentText" placeholder="Skriv en kommentar…"></textarea>
- <button class="btn ok solid" id="sendComment">Send til Wendie</button>
- <p class="sent-note" id="sentNote">✓ Sendt — tak!</p>
+<div class="card commentbox" style="padding:14px 16px">
+<textarea id="commentText" placeholder="Skriv en kommentar…"></textarea>
+<button class="btn ok solid" id="sendComment">Send til Wendie</button>
+<p class="sent-note" id="sentNote">✓ Sendt — tak!</p>
 </div>
 
-<p class="foot">The Beach House · Trelde Næsvej 95</p>
+<details>
+<summary>Noter</summary>
+<div class="det-body">
+<p><b>Ledige perioder:</b> før 12. juli · 19.–23. august · efter 6. september.</p>
+<p><b>Løbende vedligehold:</b> vinduespudsning udvendig hver 4. uge (Mpuds) · terrassebehandling igangværende.</p>
+<p><b>Husregler (alle ophold):</b> ingen rygning · ingen støj efter kl. 23 · hunde må ikke være på møblerne, og hundehår fjernes før afrejse.</p>
 </div>
+</details>
+
+<p class="foot">The Beach House · Trelde Næsvej 95</p>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -107,148 +256,329 @@ const SUPABASE_URL='https://cqmjiymbspmybyurblwq.supabase.co';
 const SUPABASE_KEY='sb_publishable_N9_9VLNzmVpkk5dazL87lQ_nAgOBTOb';
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-const key=(y,m,d)=>y*10000+m*100+d;
-const PLAN=[
- {id:'p1',date:'12. juli',txt:'Klargør før Ørjan (ankomst kl. 16)',days:[[2026,6,12]]},
- {id:'p2',date:'21.–22. juli',txt:'Ørjan ud → Cindy ind',days:[[2026,6,21],[2026,6,22]]},
- {id:'p3',date:'29. juli',txt:'Cindy ud → Katrijn ind',days:[[2026,6,29]]},
- {id:'p4',date:'4. august',txt:'Katrijn ud → Urs ind',days:[[2026,7,4]]},
- {id:'p5',date:'9. august',txt:'Urs ud → Pascal ind',days:[[2026,7,9]]},
- {id:'p6',date:'19.–23. august',txt:'Pascal ud → Sarah ind',days:[[2026,7,19],[2026,7,20],[2026,7,21],[2026,7,22],[2026,7,23]]},
- {id:'p7',date:'28.–30. august',txt:'Sarah ud → Tamara ind',days:[[2026,7,28],[2026,7,29],[2026,7,30]]},
- {id:'p8',date:'6. september',txt:'Slutrengøring efter Tamara',days:[[2026,8,6]]},
+const MONTHS=["januar","februar","marts","april","maj","juni","juli","august","september","oktober","november","december"];
+const bookings=[
+ {n:"Ørjan",c:"#2f9e7e",i:[2026,6,12],o:[2026,6,21]},
+ {n:"Cindy",c:"#d65a73",i:[2026,6,22],o:[2026,6,29]},
+ {n:"Katrijn",c:"#e0913a",i:[2026,6,29],o:[2026,7,4]},
+ {n:"Urs",c:"#5b8def",i:[2026,7,4],o:[2026,7,9]},
+ {n:"Pascal",c:"#9b59b6",i:[2026,7,9],o:[2026,7,19]},
+ {n:"Sarah",c:"#e2725b",i:[2026,7,23],o:[2026,7,28]},
+ {n:"Tamara",c:"#16a3a3",i:[2026,7,30],o:[2026,8,6]},
 ];
+function hexa(h,a){const n=parseInt(h.slice(1),16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`;}
+const key=(y,m,d)=>y*10000+m*100+d;
+const nightOcc={},arr={},dep={};
+bookings.forEach(b=>{
+ let d=new Date(b.i[0],b.i[1],b.i[2]), end=new Date(b.o[0],b.o[1],b.o[2]);
+ arr[key(b.i[0],b.i[1],b.i[2])]=b; dep[key(b.o[0],b.o[1],b.o[2])]=b;
+ while(d<end){nightOcc[key(d.getFullYear(),d.getMonth(),d.getDate())]=b;d.setDate(d.getDate()+1);}
+});
+// prep-candidate days
+const prep={};
+function addRange(a,b,free){let d=new Date(a[0],a[1],a[2]),e=new Date(b[0],b[1],b[2]);
+ while(d<=e){prep[key(d.getFullYear(),d.getMonth(),d.getDate())]={free};d.setDate(d.getDate()+1);}}
+const sorted=[...bookings].sort((x,y)=>new Date(x.i[0],x.i[1],x.i[2])-new Date(y.i[0],y.i[1],y.i[2]));
+prep[key(...sorted[0].i)]={free:false,first:true};
+for(let i=0;i<sorted.length-1;i++){
+ const out=sorted[i].o,nin=sorted[i+1].i;
+ const gap=(new Date(nin[0],nin[1],nin[2])-new Date(out[0],out[1],out[2]))/86400000;
+ addRange(out,nin,gap>0);
+}
+prep[key(...sorted[sorted.length-1].o)]={free:false,last:true};
+
+document.getElementById('legend').innerHTML=
+ `<span><i class="sw" style="background:var(--rent)"></i>Udlejet</span>`
+ +`<span><i class="sw prepkey"></i>Skifte- / klargøringsdag</span>`
+ +`<span><i class="sw" style="background:var(--block)"></i>Blokeret (eget brug)</span>`;
+
+// ---- blocked days (your own use), persisted lokalt i browseren ----
+function lsGet(k){try{return localStorage.getItem(k)||''}catch(e){return''}}
+function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+let blocked=new Set();
+try{const raw=lsGet('bh_blocked');if(raw)blocked=new Set(JSON.parse(raw));}catch(e){}
+function saveBlocked(){lsSet('bh_blocked',JSON.stringify([...blocked]));}
+
+// ---- cleaning plan data. `free`=tomme dage (kan blokeres) · `days`=alle skiftedage i kalenderen ----
+const plan=[
+ {id:'p1',date:'12. jul',txt:'Klargør før Ørjan (ankomst kl. 16)',free:[],days:[[2026,6,12]]},
+ {id:'p2',date:'21. jul',txt:'Ørjan ud (21.) → Cindy ind (22.)',who:'Emilie',free:[[2026,6,21]],days:[[2026,6,21],[2026,6,22]]},
+ {id:'p3',date:'29. jul',txt:'Cindy ud → Katrijn ind',who:'Katrine',tight:true,free:[],days:[[2026,6,29]]},
+ {id:'p4',date:'4. aug',txt:'Katrijn ud → Urs ind',who:'Katrine',tight:true,free:[],days:[[2026,7,4]]},
+ {id:'p5',date:'9. aug',txt:'Urs ud → Pascal ind',tight:true,free:[],days:[[2026,7,9]]},
+ {id:'p6',date:'19.–23. aug',txt:'Pascal ud (19.) → Sarah ind (23.) · vælg dag',freeBadge:true,free:[[2026,7,19],[2026,7,20],[2026,7,21],[2026,7,22]],days:[[2026,7,19],[2026,7,20],[2026,7,21],[2026,7,22],[2026,7,23]]},
+ {id:'p7',date:'29.–30. aug',txt:'Sarah ud (28.) → Tamara ind (30.) · Emilie tager 29. el. 30.',who:'Emilie',freeBadge:true,free:[[2026,7,28],[2026,7,29]],days:[[2026,7,28],[2026,7,29],[2026,7,30]]},
+ {id:'p8',date:'6. sep',txt:'Slutrengøring efter Tamara',free:[[2026,8,6]],days:[[2026,8,6]]},
+];
+const tb=document.getElementById('planBody');
+const dayToPlan={};
+plan.forEach(p=>(p.days||[]).forEach(d=>dayToPlan[key(d[0],d[1],d[2])]=p));
+function isOwnUse(p){return p.free && p.free.some(d=>blocked.has(key(d[0],d[1],d[2])));}
+
+// ---- automatisk farve per rengøringsansvarlig ----
+const SELF_COLOR='#e84393';
+const SELF_NAMES=['dig selv','mig','mig selv','wendie','wendi'];
+const PALETTE=['#2f9e7e','#e0742e','#0f9bbf','#9c8400','#6b8e23'];
+function planName(p){const v=(lsGet('bh_clean_'+p.id)||'').trim();return v?v:(p.who||(isOwnUse(p)?'Dig selv':''));}
+function cleanerColors(){
+ const map={};let i=0;
+ plan.forEach(p=>{
+  const nm=planName(p);if(!nm)return;
+  const kn=nm.toLowerCase();
+  if(map[kn])return;
+  if(SELF_NAMES.includes(kn))map[kn]={color:SELF_COLOR,name:'Dig selv'};
+  else map[kn]={color:PALETTE[i++%PALETTE.length],name:nm};
+ });
+ return map;
+}
+function colorForPlan(p){
+ const nm=planName(p);if(!nm)return null;
+ return (cleanerColors()[nm.toLowerCase()]||{}).color||null;
+}
+
+// ---- build ONE continuous grid: 1 jul 2026 → 30 sep 2026 ----
+const grid=document.getElementById('grid');
+const startY=2026,startM=6,endM=8;
+const _now=new Date();
+const todayKey=key(_now.getFullYear(),_now.getMonth(),_now.getDate());
+
+// ---- hvilket skifte er "i dag" — bruges både til hint-teksten og Supabase turnover_id ----
 function detectTurnover(){
- const now=new Date(); const tk=key(now.getFullYear(),now.getMonth(),now.getDate());
- for(const p of PLAN){const ks=p.days.map(d=>key(d[0],d[1],d[2]));if(ks.includes(tk))return p;}
- for(const p of PLAN){const ks=p.days.map(d=>key(d[0],d[1],d[2]));if(Math.min(...ks)>tk)return p;}
- return PLAN[PLAN.length-1];
+ for(const p of plan){if((p.days||[]).some(d=>key(d[0],d[1],d[2])===todayKey))return p;}
+ let best=null,bestDiff=Infinity;
+ plan.forEach(p=>(p.days||[]).forEach(d=>{const k=key(d[0],d[1],d[2]),diff=k-todayKey;if(diff>=0&&diff<bestDiff){bestDiff=diff;best=p;}}));
+ return best||plan[plan.length-1];
 }
 const turnover=detectTurnover();
 
+function renderGrid(){
+ let html='';
+ for(let m=startM;m<=endM;m++){
+  const y=startY, first=new Date(y,m,1), lead=(first.getDay()+6)%7, days=new Date(y,m+1,0).getDate();
+  html+=`<div class="mhead">${MONTHS[m][0].toUpperCase()+MONTHS[m].slice(1)} ${y}</div>`;
+  for(let i=lead;i>0;i--){
+   const pd=new Date(y,m,1-i);
+   html+=`<div class="cell out"><span class="dn">${pd.getDate()}</span></div>`;
+  }
+  for(let d=1;d<=days;d++){
+   const k=key(y,m,d), occ=nightOcc[k], a=arr[k], dp=dep[k], p=prep[k], isBlk=blocked.has(k);
+   let bg='#fbfcfe',bl='var(--line)',who='',mk='',icon='',cls='';
+   if(occ)cls=' rented';
+   if(a&&dp){mk=`<span class="mk">${dp.n} ud ▸ ${a.n} ind</span>`;}
+   else if(a){mk=`<span class="mk">▶ ${a.n} ind</span>`;}
+   else if(dp){mk=`<span class="mk">${dp.n} ud ◀</span>`;}
+   if(p){
+    icon=`<span class="clean">🧹</span>`;cls+=' prep';
+    const pe=dayToPlan[k], col=pe?colorForPlan(pe):null;
+    if(col){bg=hexa(col,.22);bl=col;}else{bg='var(--prepbg)';bl='var(--prep)';}
+    if(!a&&!dp){mk=`<span class="mk">${p.first?'Klargør før ankomst':p.last?'Slutrengøring':'Ledig til klargøring'}</span>`;}
+    else if(dp&&!a){mk=`<span class="mk">${dp.n} ud · gør klar</span>`;}
+   }else if(occ){
+    bg='var(--rentbg)';bl='var(--rent)';
+    who=`<span class="who" style="color:var(--rent)">${occ.n}</span>`;
+   }
+   if(isBlk&&!occ){
+    bg='var(--blockbg)';bl='var(--block)';
+    who=`<span class="who" style="color:var(--block)">Eget brug</span>`;
+    if(p&&(dp||p.first||p.last)){
+     icon=`<span class="clean">🧹</span>`;
+     mk=dp?`<span class="mk" style="color:var(--block);font-weight:600">${dp.n} ud · gør rent</span>`
+        :p.last?`<span class="mk" style="color:var(--block);font-weight:600">Slutrengøring</span>`
+        :`<span class="mk" style="color:var(--block);font-weight:600">Klargør</span>`;
+    }else{icon=`<span class="clean">🏠</span>`;mk='';}
+   }
+   const isToday=k===todayKey?' today':'';
+   const isPast=k<todayKey?' past':'';
+   html+=`<div class="cell${cls}${isToday}${isPast}" data-k="${k}" style="background:${bg};border-left:3px solid ${bl}">
+     <span class="dn">${d}</span>${icon}${who}${mk}</div>`;
+  }
+  const lastDow=(new Date(y,m,days).getDay()+6)%7;
+  for(let i=1;i<=6-lastDow;i++){
+   html+=`<div class="cell out"><span class="dn">${i}</span></div>`;
+  }
+ }
+ grid.innerHTML=html;
+}
+
+const cleanLegend=document.getElementById('cleanLegend');
+function renderCleanLegend(){
+ let html=`<span><i class="sw prepkey"></i>Skiftedag (ingen navn endnu)</span>`;
+ Object.values(cleanerColors()).forEach(o=>{
+  html+=`<span><i class="sw" style="background:${o.color}"></i>${o.name} gør rent</span>`;
+ });
+ cleanLegend.innerHTML=html;
+}
+
+const editBtn=document.getElementById('editBtn');
+editBtn.addEventListener('click',()=>{
+ document.body.classList.toggle('editing');
+ const on=document.body.classList.contains('editing');
+ editBtn.classList.toggle('on',on);
+ editBtn.textContent=on?'✓ Færdig med at blokere':'✏️ Bloker dage til eget brug';
+});
+grid.addEventListener('click',e=>{
+ if(!document.body.classList.contains('editing'))return;
+ const cell=e.target.closest('.cell');
+ if(!cell||cell.classList.contains('out')||cell.classList.contains('rented'))return;
+ const k=cell.dataset.k;if(!k)return;
+ const kn=+k;
+ if(blocked.has(kn))blocked.delete(kn);else blocked.add(kn);
+ saveBlocked();renderGrid();renderPlan();renderCleanLegend();
+});
+
+function renderPlan(){
+ tb.innerHTML='';
+ plan.forEach(p=>{
+  const own=isOwnUse(p);
+  const tr=document.createElement('tr');
+  if(own)tr.className='ownrow';
+  const tag=own?'<span class="badge own">eget brug</span>'
+    :p.tight?'<span class="badge">samme dag</span>'
+    :(p.freeBadge?'<span class="badge free">vælg dag</span>':'');
+  const skift=`${p.txt}${p.tight&&!own?'<div class="tight">⚠ kun timerne mellem ud kl. 10 og ind kl. 16</div>':''}`
+    +(own?'<div class="ownnote">🏠 Du bruger huset i denne periode — du står som standard selv for rengøring. Skriv et andet navn for at lade en anden gøre det.</div>':'');
+  const col=colorForPlan(p);
+  const dot=`<i class="sw" style="margin-right:7px;flex:0 0 auto;background:${col||'transparent'};${col?'':'border:1px dashed var(--line)'}"></i>`;
+  const ph=own?'Dig selv (eget brug)':'Navn…';
+  const preset=lsGet('bh_clean_'+p.id)||(p.who||'');
+  const resp=`<span style="display:flex;align-items:center">${dot}<input class="who-in" type="text" placeholder="${ph}" value="${preset.replace(/"/g,'&quot;')}"></span>`;
+  tr.innerHTML=`<td class="date">${p.date}<br>${tag}</td>
+   <td>${skift}</td>
+   <td>${resp}</td>
+   <td style="text-align:center"><input class="done" type="checkbox" ${lsGet('bh_done_'+p.id)==='1'?'checked':''}></td>`;
+  const inp=tr.querySelector('.who-in'), cb=tr.querySelector('.done');
+  if(inp)inp.addEventListener('input',()=>{lsSet('bh_clean_'+p.id,inp.value);renderGrid();renderCleanLegend();
+   const c=colorForPlan(p);inp.previousElementSibling.style.background=c||'transparent';});
+  if(inp)inp.addEventListener('change',renderPlan);
+  cb.addEventListener('change',()=>lsSet('bh_done_'+p.id,cb.checked?'1':'0'));
+  tb.appendChild(tr);
+ });
+}
+
+// ---- klargøringstjekliste: rum for rum (konsolideret til ca. 60 punkter i alt) ----
 const BEDROOM_BASE=[
- 'Støv tørret af i alle hjørner – både ved loftet og bag døren',
- 'Støv tørret af på kommoderne',
+ 'Støvet af overalt – hjørner (helt op til loftet og bag døren), kommoder, lister og gardiner (brug evt. en støvrulle)',
  'Natborde trukket ud og støvet af bagved/under – der gemmer sig ofte støv der',
  'Støvsuget grundigt under sengen',
- 'Gulv vasket',
- 'Lister tørret af',
- 'Gardiner tjekket for støv – fjern evt. med en støvrulle',
- 'Luftet ud',
- 'Tæpper banket og støvsuget'
+ 'Gulv vasket, tæpper banket og støvsuget, luftet godt ud'
 ];
 const TOWEL_ITEM='Håndklæder lagt frem på sengen – 2 stk. pr. person (1 stort + 1 lille), tjekket for pletter (læg pletfyldte til side til Wendie)';
 const checklistRooms=[
  {id:'sov1',icon:'🛏️',name:'Soveværelse 1 (hovedværelse)',imgs:['sov1-1','sov1-2','sov1-3'],
   sub:'Redes altid op til 2 personer.',
-  items:[...BEDROOM_BASE,'Rent sengetøj redt op til 2 personer',TOWEL_ITEM]},
+  items:[...BEDROOM_BASE,'Rent sengetøj redt op til 2 personer – matcher sættet i de andre senge, der bruges',TOWEL_ITEM]},
  {id:'sov2',icon:'🛏️',name:'Soveværelse 2 (midten)',imgs:['sov2-1','sov2-2','sov2-3','sov2-4'],
-  sub:'Redes kun op hvis gæsterne er flere end 3 personer i alt — spørg altid gæsterne på forhånd hvordan de vil have sengene fordelt.',
+  sub:'Redes kun op hvis gæsterne er flere end 3 personer i alt — spørg altid gæsterne på forhånd hvordan de vil have sengene fordelt. Denne gang (Cindy: 3 voksne + 1 barn): redes op til 1 person her.',
   items:[
-   'Støv tørret af i alle hjørner – loft og bag døren','Støv tørret af på kommoderne',
-   'Seng trukket lidt ud, så der kan gøres ordentligt rent bagved og ved vinduet','Natborde støvet af',
-   'Støvsuget grundigt under sengen','Gulv vasket','Lister tørret af','Gardiner tjekket for støv','Luftet ud',
-   'Tæpper banket og støvsuget','Sengetøj redt op efter aftale (se note ovenfor)',TOWEL_ITEM
+   'Støvet af overalt – hjørner (loft og bag døren), kommoder, lister og gardiner',
+   'Seng trukket lidt ud, så der kan gøres ordentligt rent bagved og ved vinduet, natborde støvet af',
+   'Støvsuget grundigt under sengen',
+   'Gulv vasket, tæpper banket og støvsuget, luftet godt ud',
+   'Sengetøj redt op til 1 person (denne gang – se note ovenfor)',
+   TOWEL_ITEM
   ]},
  {id:'sov3',icon:'🛏️',name:'Soveværelse 3',imgs:['sov3-1','sov3-2','sov3-3','sov3-4'],
   sub:'Næstbedste værelse. Hvis gæsterne kun er 3 personer i alt, redes der op til 1 person herinde – spørg altid på forhånd.',
   items:[...BEDROOM_BASE,'Sengetøj redt op efter aftale (se note ovenfor)',TOWEL_ITEM]},
  {id:'udestue',icon:'🌿',name:'Udestue',imgs:['udestue-1','udestue-2','udestue-3'],items:[
-  'Begge sofaer støvsuget grundigt','Tjek for pletter – tør evt. af med fugtig klud','Støv tørret af – især ved planter og lamper',
-  'Tørret af bag ved og under sofaerne','Planter og lænestol trukket frem, så der kan gøres rent bagved',
-  'Brune fluepletter tørret grundigt af (der er tit en del)','Tæppe støvsuget godt','Puder banket','Stole tørret af',
-  'Støv tørret af på kommoden','Gulv vasket','Vinduer tørret af indvendigt'
+  'Sofaer støvsuget grundigt (også bagved/under), puder banket og tjekket/tørret for pletter',
+  'Planter, lænestol og kommode trukket frem og støvet af – husk brune fluepletter (der er tit en del)',
+  'Stole tørret af, tæppe støvsuget godt',
+  'Gulv vasket',
+  'Vinduer tørret af indvendigt'
  ]},
  {id:'stue',icon:'🛋️',name:'Stue',imgs:['stue-1','stue-2','stue-3','stue-4'],items:[
-  'Støv tørret af overalt','Tjek at der ikke står våde blomster i vinduerne – efterlader mærker','Støvsuget godt under sofaen',
-  'Støvsuget godt bag daybedden – bliver ofte meget støvet der','Lister tørret af','Lamper tørret af',
-  'Dørkarme og døre tørret af','Gulv vasket','Vinduer tørret af indvendigt','Pejs tjekket og ren'
+  'Støvet af overalt – lister, lamper, dørkarme og døre',
+  'Støvsuget godt under sofaen og bag daybedden (bliver ofte meget støvet der)',
+  'Tjek at der ikke står våde blomster i vinduerne – efterlader mærker',
+  'Gulv vasket, vinduer tørret af indvendigt',
+  'Pejs tjekket og ren'
  ]},
  {id:'koekken',icon:'🍽️',name:'Køkken',imgs:['koekken-1','koekken-2','koekken-3','koekken-4'],items:[
-  'Bordplader og fliser aftørret og desinficeret','Ovn, komfur og emhætte rengjort for fedt',
-  'Mikroovn gjort ren indvendigt og udvendigt','Vaskemaskine tjekket – sæbeskuffen fri for snavs/sæberester',
-  'Skab under ovnen tørret grundigt af – bliver ofte beskidt','Bestikskuffen tørret af for krummer',
-  'Øvrige skabe og skuffer tørret af for krummer','Køleskab tømt for gamle madvarer, aftørret indvendigt',
-  'Opvaskemaskine tømt og ren','Afspændingsmiddel fyldt på i opvaskemaskinen','Service, gryder og pander rene og på plads',
-  'Skraldespand tømt, ny pose i','Genbrugsaffald sorteret korrekt og sat ud i garagen, klar til afhentning',
-  'Karklude og håndklæder skiftet til rene','Fyldt op: 1 køkkenrulle, sukker, salt og peber',
-  'Håndsæbe og opvaskemiddel fyldt op ved vasken','Vandhane og vask blankpudset','Gulv vasket','Vinduer tørret af indvendigt'
+  'Bordplader, fliser, skabe og skuffer (inkl. skabet under ovnen og bestikskuffen – bliver ofte beskidt) aftørret og desinficeret',
+  'Ovn, komfur, emhætte, mikroovn og vaskemaskine (sæbeskuffen fri for snavs/sæberester) rengjort/tjekket',
+  'Køleskab tømt for gamle madvarer og aftørret indvendigt',
+  'Opvaskemaskine tømt og ren, afspændingsmiddel fyldt på',
+  'Service, gryder og pander rene og på plads; skraldespand tømt med ny pose',
+  'Genbrugsaffald sorteret korrekt (se sorteringsguiden ovenfor) og sat ud i garagen, klar til afhentning',
+  'Karklude og håndklæder skiftet til rene; håndsæbe, opvaskemiddel, køkkenrulle, sukker, salt og peber fyldt op; vandhane og vask blankpudset',
+  'Gulv vasket, vinduer tørret af indvendigt'
  ]},
  {id:'gaestetoilet',icon:'🚽',name:'Gæstetoilet',imgs:['gaestetoilet-1'],
-  sub:'Spejlet hænger lidt løst/lavt — vær forsigtig når det pudses, så det ikke falder ned.',
+  sub:'Spejlet hænger lidt løst/lavt — vær forsigtig når det pudses, så det ikke falder ned (må vi leve med i år).',
   items:[
-  'Toilet rengjort og desinficeret ud- og indvendigt','Håndvask og armatur blankpudset','Spejl pudset forsigtigt',
-  'Håndsæbe fyldt op','Rent håndklæde hængt op','Ny toiletrulle sat på holderen + 1 ekstra rulle i skuffen',
-  'Skraldespand tømt','Gulv vasket'
+  'Toilet rengjort og desinficeret ud- og indvendigt',
+  'Håndvask og armatur blankpudset, spejl pudset forsigtigt (se note ovenfor)',
+  'Håndsæbe fyldt op, rent håndklæde hængt op',
+  'Ny toiletrulle sat på holderen + 1 ekstra rulle i skuffen, skraldespand tømt',
+  'Gulv vasket'
  ]},
  {id:'bad',icon:'🛁',name:'Badeværelse',imgs:['bad-1','bad-2','bad-3','bad-4'],items:[
-  'Bruseniche/badekar rengjort for kalk, hår og sæberester','Toilet rengjort og desinficeret','Håndvask og armatur blankpudset',
-  'Spejl pudset uden striber','Rene håndklæder (bad + hånd) lagt frem','Ny toiletrulle sat på holderen + 1 ekstra rulle i skuffen',
-  'Skraldespand tømt','Gulv vasket og helt tørt – ingen glidefare','Vinduer tørret af indvendigt'
+  'Bruseniche/badekar rengjort for kalk, hår og sæberester',
+  'Toilet rengjort og desinficeret, håndvask og armatur blankpudset',
+  'Spejl pudset uden striber, rene håndklæder (bad + hånd) lagt frem',
+  'Ny toiletrulle sat på holderen + 1 ekstra rulle i skuffen, skraldespand tømt',
+  'Gulv vasket og helt tørt – ingen glidefare, vinduer tørret af indvendigt'
  ]},
  {id:'gang',icon:'🚪',name:'Gang / entré',items:[
-  'Støv tørret af i hjørner – både oppe og nede','Vindueskarm tørret af','Dørkarme tørret af','Gulv fejet og vasket'
+  'Støvet af i hjørner (oppe og nede), vindueskarm og dørkarme',
+  'Gulv fejet og vasket'
  ]},
- {id:'planter',icon:'🪴',name:'Planter vandet',items:['Stue','Køkken','Badeværelse','Udestue']},
- {id:'aflob',icon:'🚰',name:'Kogende vand i afløb',items:['Køkken','Badeværelse','Gæstetoilet']},
+ {id:'planter',icon:'🪴',name:'Planter vandet',items:[
+  'Planter vandet i stue, køkken, badeværelse og udestue'
+ ]},
+ {id:'aflob',icon:'🚰',name:'Kogende vand i afløb',items:[
+  'Kogende vand hældt i afløb i køkken, badeværelse og gæstetoilet'
+ ]},
  {id:'varme',icon:'🌡️',name:'Radiatorer & varmeovne — slukket om sommeren',items:[
-  'Radiator i stuen','Varmeovn i stuen','Radiator i køkkenet','Radiator på soveværelse 2 (midterste)','Varmeovn på badeværelset'
+  'Alle radiatorer og varmeovne slukket (stue, køkken, soveværelse 2, badeværelse)'
  ]},
  {id:'udenfor',icon:'🌤️',name:'Udenfor',imgs:['udenfor-1','udenfor-2','udenfor-3','udenfor-4'],items:[
   'Grill tjekket ren – hvis ikke: tænd gassen, varm den op, gør den ren, og husk at slukke gassen igen',
-  'Havemøbler tjekket – fri for pletter og stillet pænt op','Fejet og pænt udenfor (hvis havemanden ikke allerede har gjort det)',
+  'Havemøbler tjekket – fri for pletter og stillet pænt op; fejet og pænt udenfor',
   'Have/græsplæne tjekket – Navimow kører som den skal',
   'Meldt regn inden/samme dag som ankomst? Hynder oppe under halvtaget, hynder på terrassen i hyndeboksen, parasoller ned, sofapude ved vandet med op under halvtaget'
  ]},
  {id:'generelt',icon:'✅',name:'Generelt — sidste tjek',imgs:['drivhus-1'],items:[
-  'Luftet grundigt ud i alle rum','Alle vinduer lukket og låst','Nøgle til gæsterne lagt i vandkanden i drivhuset',
-  'Postkassen tømt – evt. billede af breve/regninger sendt til Wendie','Sidste lugt-tjek i hvert rum – ingen dyre-, fugt- eller madlugt',
-  'Alt lys tændt/slukket for at tjekke pærer','Brandalarmer tjekket',
-  'Tjek hele huset for glemte ting fra forrige gæster – læg eventuelle fund i en pose mærket med gæstens navn',
+  'Luftet grundigt ud i alle rum, alle vinduer lukket og låst',
+  'Nøgle til gæsterne lagt i vandkanden i drivhuset',
+  'Alt lys tændt/slukket for at tjekke pærer, brandalarmer tjekket',
+  'Sidste lugt-tjek i hvert rum (ingen dyre-, fugt- eller madlugt); tjek hele huset for glemte ting fra forrige gæster – læg fund i en pose mærket med gæstens navn',
   'Til allersidst, inden du låser af: sprøjt sofapuder og gardiner med duft'
  ]}
 ];
 
-let WHO='';
+// ---- live tjekliste via Supabase: alle der er inde på siden ser samme status ----
+const chkHintEl=document.getElementById('chkHint');
+if(chkHintEl){chkHintEl.innerHTML=`Til dagens skift: <b>${turnover.txt}</b> (${turnover.date}). `+chkHintEl.innerHTML;}
+
+let WHO=lsGet('bh_who');
 let checkState={}; // key: room_i -> {checked,checked_by}
 const sk=(r,i)=>r+'_'+i;
 
-function lsGet(k){try{return localStorage.getItem(k)||''}catch(e){return''}}
-function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
-
-document.getElementById('whoSelect').addEventListener('change',e=>{
- document.getElementById('whoOther').style.display=e.target.value==='__other'?'block':'none';
+const whoSelect=document.getElementById('whoSelect');
+const whoOther=document.getElementById('whoOther');
+(function initWho(){
+ if(!WHO)return;
+ const opt=[...whoSelect.options].find(o=>o.value===WHO);
+ if(opt)whoSelect.value=WHO;
+ else{whoSelect.value='__other';whoOther.style.display='inline-block';whoOther.value=WHO;}
+})();
+whoSelect.addEventListener('change',()=>{
+ whoOther.style.display=whoSelect.value==='__other'?'inline-block':'none';
+ if(whoSelect.value&&whoSelect.value!=='__other'){WHO=whoSelect.value;lsSet('bh_who',WHO);renderChecklist();}
 });
-document.getElementById('startBtn').addEventListener('click',async()=>{
- const sel=document.getElementById('whoSelect').value;
- const name=sel==='__other'?document.getElementById('whoOther').value.trim():sel;
- if(!name){alert('Vælg eller skriv dit navn først');return;}
- WHO=name; lsSet('bh_who',name);
- await boot();
-});
-document.getElementById('switchWho').addEventListener('click',e=>{
- e.preventDefault();
- document.getElementById('app').style.display='none';
- document.getElementById('gate').style.display='block';
-});
+whoOther.addEventListener('input',()=>{WHO=whoOther.value.trim();lsSet('bh_who',WHO);renderChecklist();});
 
-async function boot(){
- document.getElementById('gate').style.display='none';
- document.getElementById('app').style.display='block';
- document.getElementById('whoLabel').textContent=WHO;
- document.getElementById('turnoverBox').innerHTML=`<b>${turnover.txt}</b><br>${turnover.date}`;
- await loadState();
- renderChecklist();
- subscribeRealtime();
-}
+const chkGrid=document.getElementById('chkGrid');
+const chkProgress=document.getElementById('chkProgress');
 
-async function loadState(){
- const {data,error}=await sb.from('checklist_checks').select('*').eq('turnover_id',turnover.id);
+async function loadChecklistState(){
+ const {data}=await sb.from('checklist_checks').select('*').eq('turnover_id',turnover.id);
  checkState={};
  if(data)data.forEach(row=>{checkState[sk(row.room_id,row.item_index)]={checked:row.checked,by:row.checked_by};});
 }
-
-function subscribeRealtime(){
+function subscribeChecklistRealtime(){
  sb.channel('checks-'+turnover.id)
   .on('postgres_changes',{event:'*',schema:'public',table:'checklist_checks',filter:`turnover_id=eq.${turnover.id}`},payload=>{
    const row=payload.new&&payload.new.id?payload.new:payload.old;
@@ -258,8 +588,8 @@ function subscribeRealtime(){
    renderChecklist();
   }).subscribe();
 }
-
 async function toggleItem(roomId,i,itemText,checked){
+ if(!WHO){alert('Vælg dit navn ovenfor først');return;}
  checkState[sk(roomId,i)]={checked,by:WHO};
  renderChecklist();
  await sb.from('checklist_checks').upsert({
@@ -267,7 +597,6 @@ async function toggleItem(roomId,i,itemText,checked){
  },{onConflict:'turnover_id,room_id,item_index'});
 }
 
-const chkGrid=document.getElementById('chkGrid');
 function renderChecklist(){
  let doneTotal=0,itemTotal=0,html='';
  checklistRooms.forEach(r=>{
@@ -278,7 +607,7 @@ function renderChecklist(){
    if(checked)doneCount++;
    const id='chk_'+r.id+'_'+i;
    const by=checked&&st.by?`<span class="by">✓ ${st.by}</span>`:'';
-   return `<li class="${checked?'done':''}"><input type="checkbox" id="${id}" data-room="${r.id}" data-i="${i}" ${checked?'checked':''}><label for="${id}">${txt}${by}</label></li>`;
+   return `<li class="${checked?'done':''}"><input type="checkbox" id="${id}" data-room="${r.id}" data-i="${i}" ${checked?'checked':''} ${WHO?'':'disabled'}><label for="${id}">${txt}${by}</label></li>`;
   }).join('');
   doneTotal+=doneCount;itemTotal+=r.items.length;
   const complete=doneCount===r.items.length;
@@ -286,15 +615,15 @@ function renderChecklist(){
   const sub=r.sub?`<p class="rnote">${r.sub}</p>`:'';
   html+=`<div class="room-card${complete?' complete':''}">
    <h3>${r.icon} ${r.name}</h3>
-   ${gallery}${sub}
+   ${gallery}
+   ${sub}
    <p class="rprog"><b>${doneCount}/${r.items.length}</b> gjort${complete?' · ✓ færdig':''}</p>
    <ul class="chk-list">${items}</ul>
   </div>`;
  });
  chkGrid.innerHTML=html;
- document.getElementById('progressLabel').textContent=`${doneTotal}/${itemTotal}`;
- document.getElementById('barFill').style.width=itemTotal?Math.round(doneTotal/itemTotal*100)+'%':'0%';
- chkGrid.querySelectorAll('input[type=checkbox]').forEach(cb=>{
+ chkProgress.innerHTML=WHO?`<b>${doneTotal}/${itemTotal}</b> punkter klaret`:`<span class="needwho">☝️ Vælg dit navn ovenfor for at kunne krydse af</span> · <b>${doneTotal}/${itemTotal}</b> punkter klaret`;
+ chkGrid.querySelectorAll('input[type="checkbox"]').forEach(cb=>{
   cb.addEventListener('change',()=>{
    const r=cb.dataset.room,i=+cb.dataset.i;
    const room=checklistRooms.find(x=>x.id===r);
@@ -302,6 +631,12 @@ function renderChecklist(){
   });
  });
 }
+document.getElementById('chkResetBtn').addEventListener('click',async()=>{
+ if(!confirm('Nulstil hele tjeklisten til næste klargøring? Dette rydder listen for alle, der er inde på siden.'))return;
+ await sb.from('checklist_checks').delete().eq('turnover_id',turnover.id);
+ checkState={};
+ renderChecklist();
+});
 
 document.getElementById('sendComment').addEventListener('click',async()=>{
  const txt=document.getElementById('commentText').value.trim();
@@ -313,14 +648,8 @@ document.getElementById('sendComment').addEventListener('click',async()=>{
  setTimeout(()=>note.style.display='none',3000);
 });
 
-// husk seneste navn
-const remembered=lsGet('bh_who');
-if(remembered){
- const sel=document.getElementById('whoSelect');
- const opt=[...sel.options].find(o=>o.value===remembered);
- if(opt)sel.value=remembered;
- else{sel.value='__other';document.getElementById('whoOther').style.display='block';document.getElementById('whoOther').value=remembered;}
-}
+renderGrid();renderPlan();renderCleanLegend();
+loadChecklistState().then(()=>{renderChecklist();subscribeChecklistRealtime();});
 </script>
 </body>
 </html>
