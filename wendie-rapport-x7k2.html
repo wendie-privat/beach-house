@@ -67,6 +67,10 @@ h2{font-size:16px;margin:28px 0 8px;display:flex;align-items:center;gap:8px}
 <h2>🧹 Klargøring pr. skifte</h2>
 <div id="turnList"></div>
 
+<h2>🧳 Gæsternes udcheck <span id="guestNow" style="font-size:12px;color:var(--muted);font-weight:400"></span></h2>
+<p class="hint">Hvad gæsterne har krydset af på afrejse-tjeklisten på velkomstsiden. Opdateres af sig selv — kun til din egen orientering.</p>
+<div id="guestList"></div>
+
 </div>
 </div>
 
@@ -100,6 +104,30 @@ const ROOM_NAMES={
 };
 const ROOM_ORDER=Object.keys(ROOM_NAMES);
 
+/* ===== Gæsternes afrejse-tjekliste =====
+   GUESTS[].id skal matche GUEST.id i velkomstsiden (fornavn-ÅÅÅÅ-MM-DD = afrejsedagen). */
+const GUESTS=[
+ {id:'katrijn-2026-08-04',name:'Katrijn',stay:'29. juli – 4. august'},
+ {id:'urs-2026-08-09',name:'Urs',stay:'4. – 9. august'},
+ {id:'pascal-2026-08-19',name:'Pascal & Nicoline',stay:'9. – 19. august'},
+ {id:'sarah-2026-08-28',name:'Sarah',stay:'23. – 28. august'},
+ {id:'tamara-2026-09-06',name:'Tamara',stay:'30. august – 6. september'},
+];
+const GUEST_ITEMS=[
+ "Vask op, ryd på plads, og tøm opvaskemaskinen.",
+ "Tag al jeres egen mad med fra køleskab og fryser.",
+ "Tjek under sengene og i skabe og skuffer, så intet bliver glemt.",
+ "Tøm alt affald — også på badet — og sæt sorteringsposerne i køkkenet.",
+ "Har I haft hund: støvsug møblerne (og gerne rummene) for hår.",
+ "Tag hynderne ind / læg dem i kassen, og sæt møbler tilbage, hvis noget er flyttet.",
+ "Tag parasollerne ned, hvis det blæser meget.",
+ "Tag en hurtig børste i toiletterne.",
+ "Tøm asken fra brændeovn og bålfad.",
+ "Gør den nye gasgrill ren.",
+ "Gør ovnen ren.",
+ "Læg nøglen tilbage i vandkanden i drivhuset, hvor I fandt den."
+];
+
 document.getElementById('unlockBtn').addEventListener('click',unlock);
 document.getElementById('pass').addEventListener('keydown',e=>{if(e.key==='Enter')unlock();});
 function unlock(){
@@ -112,7 +140,39 @@ function unlock(){
 document.getElementById('refreshBtn').addEventListener('click',loadAll);
 
 async function loadAll(){
- await Promise.all([loadComments(),loadChecks()]);
+ await Promise.all([loadComments(),loadChecks(),loadGuestChecks()]);
+}
+
+async function loadGuestChecks(){
+ const {data}=await sb.from('checklist_checks').select('*').eq('room_id','udcheck');
+ const byGuest={};
+ (data||[]).forEach(row=>{byGuest[row.turnover_id]=byGuest[row.turnover_id]||{};byGuest[row.turnover_id][row.item_index]=row;});
+ const total=GUEST_ITEMS.length;
+ const list=document.getElementById('guestList');
+ const now=new Date();
+ let openGuest='';
+ list.innerHTML=GUESTS.map(g=>{
+  const rows=byGuest[g.id]||{};
+  const done=Object.values(rows).filter(r=>r.checked).length;
+  const pct=Math.round(done/total*100);
+  const times=Object.values(rows).filter(r=>r.checked&&r.checked_at).map(r=>new Date(r.checked_at));
+  const last=times.length?new Date(Math.max.apply(null,times)):null;
+  const lastTxt=last?'sidst '+last.toLocaleDateString('da-DK',{day:'numeric',month:'short'})+' kl. '+last.toLocaleTimeString('da-DK',{hour:'2-digit',minute:'2-digit'}):'';
+  const items=GUEST_ITEMS.map((txt,i)=>{
+   const r=rows[i];
+   const on=r&&r.checked;
+   const t=on&&r.checked_at?new Date(r.checked_at).toLocaleTimeString('da-DK',{hour:'2-digit',minute:'2-digit'}):'';
+   return `<div class="item${on?' on':''}"><span>${on?'✓':'○'} ${escapeHtml(txt)}</span><span class="by">${t}</span></div>`;
+  }).join('');
+  const isOpen=done>0&&done<total;
+  if(isOpen&&!openGuest)openGuest=g.name;
+  return `<details class="turn card" style="padding:0"${isOpen?' open':''}>
+   <summary><span>${escapeHtml(g.name)} <span style="color:var(--muted);font-weight:400">· ${g.stay}</span></span>
+    <span class="bar"><i style="width:${pct}%"></i></span><span class="pct">${done}/${total}</span></summary>
+   <div class="roomrow"><div class="rh"><span>Afrejse-tjekliste</span><span style="font-weight:400;color:var(--muted)">${lastTxt}</span></div>${items}</div>
+  </details>`;
+ }).join('');
+ document.getElementById('guestNow').textContent=openGuest?'· '+openGuest+' er i gang':'';
 }
 
 async function loadComments(){
