@@ -319,14 +319,14 @@ function saveBlocked(){lsSet('bh_blocked',JSON.stringify([...blocked]));}
 
 // ---- cleaning plan data. `free`=tomme dage (kan blokeres) · `days`=alle skiftedage i kalenderen ----
 const plan=[
- {id:'p1',date:'12. jul',txt:'Klargør før Ørjan (ankomst kl. 16)',free:[],days:[[2026,6,12]]},
- {id:'p2',date:'21. jul',txt:'Ørjan ud (21.) → Cindy ind (22.)',who:'Emilie',free:[[2026,6,21]],days:[[2026,6,21],[2026,6,22]]},
- {id:'p3',date:'29. jul',txt:'Cindy ud → Katrijn ind',who:'Katrine',tight:true,free:[],days:[[2026,6,29]]},
- {id:'p4',date:'4. aug',txt:'Katrijn ud → Urs ind',who:'Katrine',tight:true,free:[],days:[[2026,7,4]]},
- {id:'p5',date:'9. aug',txt:'Urs ud → Pascal ind',tight:true,free:[],days:[[2026,7,9]]},
- {id:'p6',date:'19.–23. aug',txt:'Pascal ud (19.) → Sarah ind (23.) · vælg dag',freeBadge:true,free:[[2026,7,19],[2026,7,20],[2026,7,21],[2026,7,22]],days:[[2026,7,19],[2026,7,20],[2026,7,21],[2026,7,22],[2026,7,23]]},
- {id:'p7',date:'29.–30. aug',txt:'Sarah ud (28.) → Tamara ind (30.) · Emilie tager 29. el. 30.',who:'Emilie',freeBadge:true,free:[[2026,7,28],[2026,7,29]],days:[[2026,7,28],[2026,7,29],[2026,7,30]]},
- {id:'p8',date:'6. sep',txt:'Slutrengøring efter Tamara',free:[[2026,8,6]],days:[[2026,8,6]]},
+ {id:'p1',date:'12. jul',txt:'Klargør før Ørjan (ankomst kl. 16)',free:[],days:[[2026,6,12]],guests:'Ørjan ankommer: 2 voksne + 3 børn (5 gæster i alt), 1 hund'},
+ {id:'p2',date:'21. jul',txt:'Ørjan ud (21.) → Cindy ind (22.)',who:'Emilie',free:[[2026,6,21]],days:[[2026,6,21],[2026,6,22]],guests:'Cindy ankommer: 3 voksne + 1 barn (4 gæster i alt), 1 kæledyr'},
+ {id:'p3',date:'29. jul',txt:'Cindy ud → Katrijn ind',who:'Katrine',tight:true,free:[],days:[[2026,6,29]],guests:'Katrijn ankommer: op til 6 gæster i alt, 1 hund'},
+ {id:'p4',date:'4. aug',txt:'Katrijn ud → Urs ind',who:'Katrine',tight:true,free:[],days:[[2026,7,4]],guests:'Urs ankommer: 3 voksne'},
+ {id:'p5',date:'9. aug',txt:'Urs ud → Pascal ind',tight:true,free:[],days:[[2026,7,9]],guests:'Pascal & Nicoline ankommer: op til 6 gæster i alt, 2 hunde'},
+ {id:'p6',date:'19.–23. aug',txt:'Pascal ud (19.) → Sarah ind (23.) · vælg dag',freeBadge:true,free:[[2026,7,19],[2026,7,20],[2026,7,21],[2026,7,22]],days:[[2026,7,19],[2026,7,20],[2026,7,21],[2026,7,22],[2026,7,23]],guests:'Sarah ankommer: 6 voksne + 1 spædbarn (7 gæster i alt), 2 kæledyr'},
+ {id:'p7',date:'29.–30. aug',txt:'Sarah ud (28.) → Tamara ind (30.) · Emilie tager 29. el. 30.',who:'Emilie',freeBadge:true,free:[[2026,7,28],[2026,7,29]],days:[[2026,7,28],[2026,7,29],[2026,7,30]],guests:'Tamara ankommer: 2 voksne, 1 kæledyr'},
+ {id:'p8',date:'6. sep',txt:'Slutrengøring efter Tamara',free:[[2026,8,6]],days:[[2026,8,6]],guests:'Ingen nye gæster — slutrengøring for sæsonen'},
 ];
 const tb=document.getElementById('planBody');
 const dayToPlan={};
@@ -486,17 +486,17 @@ const checklistRooms=[
   sub:'Redes altid op til 2 personer.',
   items:[...BEDROOM_BASE,'Rent sengetøj redt op til 2 personer – matcher sættet i de andre senge, der bruges',TOWEL_ITEM]},
  {id:'sov2',icon:'🛏️',name:'Soveværelse 2 (midten)',imgs:['sov2-1','sov2-2','sov2-3','sov2-4'],
-  sub:'Redes kun op hvis gæsterne er flere end 3 personer i alt — spørg altid gæsterne på forhånd hvordan de vil have sengene fordelt. Denne gang (Cindy: 3 voksne + 1 barn): redes op til 1 person her.',
+  sub:'Redes kun op hvis gæsterne samlet set er flere end 3 personer — se gæsteantal for dagens skift øverst på siden, og spørg altid gæsterne på forhånd hvordan de vil have sengene fordelt.',
   items:[
    'Støvet af overalt – hjørner (loft og bag døren), kommoder, lister og gardiner',
    'Seng trukket lidt ud, så der kan gøres ordentligt rent bagved og ved vinduet, natborde støvet af',
    'Støvsuget grundigt under sengen',
    'Gulv vasket, tæpper banket og støvsuget, luftet godt ud',
-   'Sengetøj redt op til 1 person (denne gang – se note ovenfor)',
+   'Sengetøj redt op efter aftale med gæsterne (se note ovenfor og gæsteantal øverst)',
    TOWEL_ITEM
   ]},
  {id:'sov3',icon:'🛏️',name:'Soveværelse 3',imgs:['sov3-1','sov3-2','sov3-3','sov3-4'],
-  sub:'Næstbedste værelse. Hvis gæsterne kun er 3 personer i alt, redes der op til 1 person herinde – spørg altid på forhånd.',
+  sub:'Næstbedste værelse, bruges ved 3 gæster eller ved større grupper. Se gæsteantal for dagens skift øverst på siden, og bekræft altid fordelingen med gæsterne på forhånd.',
   items:[...BEDROOM_BASE,'Sengetøj redt op efter aftale (se note ovenfor)',TOWEL_ITEM]},
  {id:'udestue',icon:'🌿',name:'Udestue',imgs:['udestue-1','udestue-2','udestue-3'],items:[
   'Sofaer støvsuget grundigt (også bagved/under), puder banket og tjekket/tørret for pletter',
@@ -569,7 +569,10 @@ const checklistRooms=[
 
 // ---- live tjekliste via Supabase: alle der er inde på siden ser samme status ----
 const chkHintEl=document.getElementById('chkHint');
-if(chkHintEl){chkHintEl.innerHTML=`Til dagens skift: <b>${turnover.txt}</b> (${turnover.date}). `+chkHintEl.innerHTML;}
+if(chkHintEl){
+ const guestLine=turnover.guests?`<br><b style="color:var(--warn)">👥 ${turnover.guests}</b>`:'';
+ chkHintEl.innerHTML=`Til dagens skift: <b>${turnover.txt}</b> (${turnover.date}).${guestLine} `+chkHintEl.innerHTML;
+}
 
 let WHO=lsGet('bh_who');
 let checkState={}; // key: room_i -> {checked,checked_by}
